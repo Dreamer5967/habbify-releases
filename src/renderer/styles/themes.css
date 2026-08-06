@@ -652,15 +652,32 @@ html.calibrated .rounded-2xl {
 }
 
 /* Semi-transparent structural surfaces */
-.bg-slate-800\/50 {
-  background-color: color-mix(in srgb, var(--color-surface) 80%, transparent) !important;
+.bg-slate-900\/90,
+.bg-slate-900\/80,
+.bg-slate-900\/60,
+.bg-slate-900\/50,
+.bg-slate-900\/40,
+.bg-slate-900\/30,
+.bg-slate-900\/20,
+.bg-slate-800\/90,
+.bg-slate-800\/80,
+.bg-slate-800\/60,
+.bg-slate-800\/50,
+.bg-slate-800\/40,
+.bg-slate-800\/30,
+.bg-slate-800\/20,
+.bg-slate-700\/60,
+.bg-slate-700\/50,
+.bg-slate-700\/40,
+.bg-slate-700\/30,
+.bg-slate-700\/20,
+.bg-black\/10,
+.bg-black\/20,
+.bg-black\/30,
+.bg-black\/40 {
+  background-color: color-mix(in srgb, var(--color-surface) 85%, var(--color-border) 15%) !important;
   box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important;
-  backdrop-filter: blur(12px) !important;
   border-color: var(--color-border) !important;
-}
-
-.bg-slate-700\/30 {
-  background-color: color-mix(in srgb, var(--color-border) 30%, transparent) !important;
 }
 
 /* Structural gradient stops - Properly overriding tailwind variables */
