@@ -384,8 +384,8 @@ Keep it to 2 short sentences. Be warm, empowering, and profound. Avoid generic p
                                 value={aiPrompt}
                                 onChange={(e) => setAiPrompt(e.target.value)}
                                 placeholder="What do you want to achieve? (e.g. Get an internship at NVIDIA)"
-                                className="flex-1 bg-transparent text-base focus:outline-none"
-                                style={{ color: 'var(--color-text)' }}
+                                className="flex-1 bg-transparent text-base border-none outline-none focus:outline-none focus:ring-0 shadow-none"
+                                style={{ color: 'var(--color-text)', border: 'none', background: 'transparent', boxShadow: 'none', outline: 'none' }}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' && aiPrompt.trim()) {
                                         onNavigate('journeyPlanner', aiPrompt);

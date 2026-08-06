@@ -796,14 +796,26 @@ html.calibrated .rounded-2xl {
 }
 
 /* ===== FORM ELEMENTS & BORDERS ===== */
-input, textarea, select {
-  background-color: var(--color-surface) !important;
-  border: 1px solid var(--color-border) !important;
-  border-radius: 9999px !important;
-  color: var(--color-text) !important;
+input:not(.bg-transparent):not(.border-none):not(.border-0),
+textarea:not(.bg-transparent):not(.border-none):not(.border-0),
+select:not(.bg-transparent):not(.border-none):not(.border-0) {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  color: var(--color-text);
+}
+input.bg-transparent, textarea.bg-transparent {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+input.border-none, textarea.border-none, input.border-0, textarea.border-0 {
+  border: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 textarea {
-  border-radius: 16px !important;
+  border-radius: 16px;
 }
 .border-slate-700, .border-slate-800, .border-gray-700, .border-gray-800, .border-slate-700\/50 {
   border-color: var(--color-border) !important;
