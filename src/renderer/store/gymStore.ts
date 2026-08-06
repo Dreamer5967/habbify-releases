@@ -21,10 +21,17 @@ export interface GymDay {
  exercises: Exercise[]
 }
 
+export interface DietGuide {
+  title?: string
+  proteinText: string
+  recoveryText: string
+}
+
 export interface GymPlan {
  id: string
  profileId: string
  days: GymDay[]
+ dietGuide?: DietGuide
  createdAt: string
  updatedAt: string
 }
@@ -39,7 +46,7 @@ interface GymState {
  removeExercise: (dayId: string, exerciseId: string) => void
  updateExercise: (dayId: string, exerciseId: string, updates: Partial<Exercise>) => void
  toggleExerciseCompletion: (dayId: string, exerciseId: string, completed: boolean) => void
- setFullPlan: (days: Omit<GymDay, 'id'>[]) => void
+ setFullPlan: (days: Omit<GymDay, 'id'>[], dietGuide?: DietGuide) => void
 }
 
 const createEmptyPlan = (profileId: string): GymPlan => ({
@@ -178,25 +185,25 @@ export const useGymStore = create<GymState>((set, get) => ({
  return { plan: updatedPlan}
 }),
 
- setFullPlan: (daysInput) => set(state => {
- if (!state.plan) return state
- 
- const newDays: GymDay[] = daysInput.map(d => ({
- id: uuidv4(),
- dayName: d.dayName,
- description: d.description || '',
- exercises: d.exercises.map(e => ({
- id: uuidv4(),
- name: e.name || '',
- sets: e.sets || '',
- reps: e.reps || '',
- weight: e.weight || '',
- completed: false
+  setFullPlan: (daysInput, dietGuide) => set(state => {
+  if (!state.plan) return state
+  
+  const newDays: GymDay[] = daysInput.map(d => ({
+  id: uuidv4(),
+  dayName: d.dayName,
+  description: d.description || '',
+  exercises: d.exercises.map(e => ({
+  id: uuidv4(),
+  name: e.name || '',
+  sets: e.sets || '',
+  reps: e.reps || '',
+  weight: e.weight || '',
+  completed: false
 }))
 }))
 
- const updatedPlan = { ...state.plan, days: newDays, updatedAt: getTrueDate().toISOString()}
- saveAndSetPlan(updatedPlan, set)
- return { plan: updatedPlan}
+  const updatedPlan = { ...state.plan, days: newDays, dietGuide: dietGuide || state.plan.dietGuide, updatedAt: getTrueDate().toISOString()}
+  saveAndSetPlan(updatedPlan, set)
+  return { plan: updatedPlan}
 })
 }))

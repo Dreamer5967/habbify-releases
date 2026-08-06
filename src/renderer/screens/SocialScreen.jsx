@@ -1,124 +1,136 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useEffect, useState, useMemo } from 'react';
-import { ChevronLeft, Share2, Trophy, Users, Search, UserPlus, Loader2, Bell, Check, X, UserMinus, MessageCircle } from 'lucide-react';
-import { useProfileStore } from '../store/profileStore';
+import { useState, useEffect, useMemo } from 'react';
+import { ChevronLeft, Trophy, Users, Search, Bell, Share2, Loader2, Check, X, UserPlus, UserMinus, MessageCircle } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useHabitStore } from '../store/habitStore';
-import { useActivityStore } from '../store/activityStore';
+import { useProfileStore } from '../store/profileStore';
 import HeatmapGrid from '../components/HeatmapGrid';
 import ChatWindow from '../components/ChatWindow';
 import { toast } from 'sonner';
+
 export default function SocialScreen({ onBack }) {
-    var _a;
     const { currentProfile } = useProfileStore();
+    const { 
+        userProfile, 
+        globalLeaderboard, 
+        friendsLeaderboard, 
+        activities, 
+        loading, 
+        feedLoading,
+        fetchGlobalLeaderboard, 
+        getFriendsLeaderboard, 
+        fetchGlobalFeed,
+        searchUsersByUsername,
+        sendFriendRequest,
+        acceptFriendRequest,
+        rejectFriendRequest,
+        removeFriend,
+        updateUserProfile
+    } = useAuthStore();
+
     const { habits } = useHabitStore();
-    const { getLeaderboard, getFriendsLeaderboard, searchUsers, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, getIncomingRequestsProfiles, userProfile } = useAuthStore();
-    const { activities, loadGlobalFeed, loading: feedLoading } = useActivityStore();
+
     const [activeTab, setActiveTab] = useState('feed');
-    const [globalLeaderboard, setGlobalLeaderboard] = useState([]);
-    const [friendsLeaderboard, setFriendsLeaderboard] = useState([]);
-    const [incomingRequests, setIncomingRequests] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
+    const [incomingRequests, setIncomingRequests] = useState([]);
     const [chatFriend, setChatFriend] = useState(null);
+
+    // Sync profile level/xp to authStore & cloud user profile
     useEffect(() => {
+        if (currentProfile && userProfile) {
+            if (userProfile.xp !== currentProfile.xp || userProfile.level !== currentProfile.level) {
+                updateUserProfile({ xp: currentProfile.xp || 0, level: currentProfile.level || 1 });
+            }
+        }
         loadData();
         loadGlobalFeed();
-    }, []);
+    }, [currentProfile?.xp, currentProfile?.level]);
+
     const loadData = async () => {
-        setLoading(true);
-        try {
-            const global = await getLeaderboard();
-            setGlobalLeaderboard(global);
-            const friends = await getFriendsLeaderboard();
-            setFriendsLeaderboard(friends);
-            const requests = await getIncomingRequestsProfiles();
-            setIncomingRequests(requests);
-        }
-        catch (error) {
-            toast.error('Failed to load social data');
-        }
-        finally {
-            setLoading(false);
+        await fetchGlobalLeaderboard();
+        await getFriendsLeaderboard();
+        if (userProfile?.incomingRequests?.length) {
+            const requestsData = await Promise.all(
+                userProfile.incomingRequests.map(uid => useAuthStore.getState().getUserProfileByUid(uid))
+            );
+            setIncomingRequests(requestsData.filter(Boolean));
+        } else {
+            setIncomingRequests([]);
         }
     };
+
+    const loadGlobalFeed = async () => {
+        await fetchGlobalFeed();
+    };
+
     const handleSearch = async (e) => {
-        if (e)
-            e.preventDefault();
-        if (!searchQuery.trim())
-            return;
+        e.preventDefault();
+        if (!searchQuery.trim()) return;
         setIsSearching(true);
-        try {
-            const results = await searchUsers(searchQuery.trim());
-            setSearchResults(results);
-        }
-        catch (error) {
-            toast.error('Search failed');
-        }
-        finally {
-            setIsSearching(false);
-        }
+        const results = await searchUsersByUsername(searchQuery.trim());
+        setSearchResults(results);
+        setIsSearching(false);
     };
-    const handleSendRequest = async (friendId) => {
-        if (friendId === (userProfile === null || userProfile === void 0 ? void 0 : userProfile.uid)) {
-            toast.error("You can't add yourself!");
-            return;
-        }
+
+    const handleSendRequest = async (targetUid) => {
         try {
-            await sendFriendRequest(friendId);
+            await sendFriendRequest(targetUid);
             toast.success('Friend request sent!');
             loadData();
-        }
-        catch (error) {
-            toast.error('Failed to send request');
+        } catch (error) {
+            toast.error(error.message || 'Failed to send request');
         }
     };
-    const handleAcceptRequest = async (friendId) => {
+
+    const handleAcceptRequest = async (senderUid) => {
         try {
-            await acceptFriendRequest(friendId);
+            await acceptFriendRequest(senderUid);
             toast.success('Friend request accepted!');
             loadData();
-        }
-        catch (error) {
+        } catch (error) {
             toast.error('Failed to accept request');
         }
     };
-    const handleRejectRequest = async (friendId) => {
+
+    const handleRejectRequest = async (senderUid) => {
         try {
-            await rejectFriendRequest(friendId);
-            toast.success('Friend request rejected');
+            await rejectFriendRequest(senderUid);
+            toast.info('Friend request ignored');
             loadData();
-        }
-        catch (error) {
+        } catch (error) {
             toast.error('Failed to reject request');
         }
     };
-    const handleRemoveFriend = async (friendId) => {
-        if (!window.confirm('Are you sure you want to remove this friend?'))
-            return;
+
+    const handleRemoveFriend = async (friendUid) => {
+        if (!confirm('Are you sure you want to remove this friend?')) return;
         try {
-            await removeFriend(friendId);
-            toast.success('Friend removed');
+            await removeFriend(friendUid);
+            toast.info('Friend removed');
             loadData();
-        }
-        catch (error) {
+        } catch (error) {
             toast.error('Failed to remove friend');
         }
     };
-    const activeHabitsCount = habits.filter(h => h.isActive && !h.isArchived).length;
-    const totalCompletions = habits.reduce((sum, h) => sum + h.totalCompletions, 0);
-    const maxStreak = Math.max(...habits.map(h => h.longestStreak), 0);
+
     const handleShare = () => {
-        if (currentProfile) {
-            const stats = `I'm on a ${maxStreak}-day streak with ${activeHabitsCount} active habits on Habbify! 🎯 Level ${currentProfile.level}`;
-            navigator.clipboard.writeText(stats);
-            toast.success('Stats copied to clipboard! Share them anywhere.');
+        if (!currentProfile) return;
+        const text = `🏆 I'm Level ${currentProfile.level} on Habbify! Streak: ${maxStreak} days. Track habits with me!`;
+        if (navigator.share) {
+            navigator.share({ title: 'My Habbify Progress', text }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(text);
+            toast.success('Copied stats to clipboard!');
         }
     };
+
+    const maxStreak = habits.reduce((max, h) => Math.max(max, h.currentStreak || 0), 0);
+    const totalCompletions = habits.reduce((sum, h) => sum + (h.totalCompletions || 0), 0);
+
     const displayList = activeTab === 'global' ? globalLeaderboard : friendsLeaderboard;
-    const pendingCount = ((_a = userProfile === null || userProfile === void 0 ? void 0 : userProfile.incomingRequests) === null || _a === void 0 ? void 0 : _a.length) || 0;
+    const pendingCount = userProfile?.incomingRequests?.length || 0;
+
     const heatmapData = useMemo(() => {
         const data = {};
         habits.forEach(h => {
@@ -130,21 +142,351 @@ export default function SocialScreen({ onBack }) {
         });
         return data;
     }, [habits]);
-    return (_jsxs("div", { className: "flex flex-col h-full bg-slate-900", children: [_jsxs("div", { className: "flex items-center gap-4 p-6 border-b border-slate-700/50", children: [_jsx("button", { onClick: onBack, className: "p-2 hover:bg-slate-800/50 backdrop-blur-sm rounded-2xl transition hover:scale-105 active:scale-95 hover:scale-105 active:scale-95", children: _jsx(ChevronLeft, { size: 24, className: "text-slate-400" }) }), _jsx("h1", { className: "text-2xl font-bold text-white", children: "Social" })] }), _jsx("div", { className: "flex-1 overflow-auto p-6", children: _jsxs("div", { className: "max-w-2xl mx-auto space-y-6", children: [currentProfile && (_jsxs("div", { className: "bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg", children: [_jsx("h2", { className: "text-xl font-semibold mb-4", children: "Your Stats" }), _jsxs("div", { className: "grid grid-cols-3 gap-4 mb-4", children: [_jsxs("div", { className: "text-center", children: [_jsx("div", { className: "text-3xl font-bold", children: currentProfile.level }), _jsx("div", { className: "text-sm opacity-90", children: "Level" })] }), _jsxs("div", { className: "text-center", children: [_jsx("div", { className: "text-3xl font-bold", children: maxStreak }), _jsx("div", { className: "text-sm opacity-90", children: "Best Streak" })] }), _jsxs("div", { className: "text-center", children: [_jsx("div", { className: "text-3xl font-bold", children: totalCompletions }), _jsx("div", { className: "text-sm opacity-90", children: "Completions" })] })] }), _jsxs("button", { onClick: handleShare, className: "w-full bg-white/20 hover:bg-white/30 text-white font-semibold py-2 px-4 rounded transition hover:scale-105 active:scale-95 flex items-center justify-center gap-2 mb-4", children: [_jsx(Share2, { size: 20 }), "Share Achievement"] }), _jsxs("div", { className: "pt-4 border-t border-white/20", children: [_jsx("h3", { className: "text-sm font-semibold mb-2 opacity-90", children: "Your Contribution Heatmap" }), _jsx(HeatmapGrid, { data: heatmapData })] })] })), _jsxs("div", { className: "flex flex-wrap gap-2 bg-slate-800/50 backdrop-blur-sm p-1 rounded-2xl", children: [_jsxs("button", { onClick: () => setActiveTab('feed'), className: `flex-1 min-w-[80px] py-2 text-sm font-semibold rounded-md transition hover:scale-105 active:scale-95 ${activeTab === 'feed' ? 'bg-slate-700 text-white shadow' : 'text-slate-400 hover:text-white'}`, children: [_jsx(Share2, { size: 16, className: "inline mr-1" }), " Feed"] }), _jsxs("button", { onClick: () => setActiveTab('global'), className: `flex-1 min-w-[80px] py-2 text-sm font-semibold rounded-md transition hover:scale-105 active:scale-95 ${activeTab === 'global' ? 'bg-slate-700 text-white shadow' : 'text-slate-400 hover:text-white'}`, children: [_jsx(Trophy, { size: 16, className: "inline mr-1" }), " Global"] }), _jsxs("button", { onClick: () => setActiveTab('friends'), className: `flex-1 min-w-[80px] py-2 text-sm font-semibold rounded-md transition hover:scale-105 active:scale-95 ${activeTab === 'friends' ? 'bg-slate-700 text-white shadow' : 'text-slate-400 hover:text-white'}`, children: [_jsx(Users, { size: 16, className: "inline mr-1" }), " Friends"] }), _jsxs("button", { onClick: () => setActiveTab('add'), className: `flex-1 min-w-[80px] py-2 text-sm font-semibold rounded-md transition hover:scale-105 active:scale-95 ${activeTab === 'add' ? 'bg-slate-700 text-white shadow' : 'text-slate-400 hover:text-white'}`, children: [_jsx(Search, { size: 16, className: "inline mr-1" }), " Find"] }), _jsxs("button", { onClick: () => setActiveTab('requests'), className: `flex-1 min-w-[80px] py-2 text-sm font-semibold rounded-md transition hover:scale-105 active:scale-95 relative ${activeTab === 'requests' ? 'bg-slate-700 text-white shadow' : 'text-slate-400 hover:text-white'}`, children: [_jsx(Bell, { size: 16, className: "inline mr-1" }), " Requests", pendingCount > 0 && (_jsx("span", { className: "absolute top-1 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse" }))] })] }), activeTab === 'feed' ? (_jsxs("div", { className: "bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 animate-fade-in", children: [_jsxs("div", { className: "flex items-center justify-between mb-4", children: [_jsx("h2", { className: "text-xl font-semibold text-white", children: "Live Feed" }), _jsx("button", { onClick: loadGlobalFeed, className: "text-slate-400 hover:text-white transition hover:scale-105 active:scale-95 hover:scale-105 active:scale-95", children: _jsx("span", { className: "text-sm", children: "Refresh" }) })] }), feedLoading ? (_jsx("div", { className: "flex justify-center py-8", children: _jsx(Loader2, { size: 32, className: "text-blue-500 animate-spin" }) })) : activities.length === 0 ? (_jsx("div", { className: "text-center py-8 text-slate-400", children: "No recent activity. Be the first!" })) : (_jsx("div", { className: "space-y-4", children: activities.map(activity => (_jsxs("div", { className: "bg-slate-700/50 p-4 rounded-2xl flex gap-4 items-center", children: [_jsx("div", { className: "w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-lg shrink-0", children: activity.profileName.charAt(0).toUpperCase() }), _jsxs("div", { children: [_jsxs("p", { className: "text-white", children: [_jsx("span", { className: "font-semibold text-blue-400", children: activity.profileName }), " ", activity.action, " ", _jsx("span", { className: "font-medium text-slate-200", children: activity.targetName })] }), _jsx("p", { className: "text-xs text-slate-400 mt-1", children: new Date(activity.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) })] })] }, activity.id))) }))] })) : activeTab === 'requests' ? (_jsxs("div", { className: "bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 animate-fade-in", children: [_jsxs("div", { className: "flex items-center justify-between mb-4", children: [_jsxs("h2", { className: "text-xl font-semibold text-white flex items-center gap-2", children: [_jsx(Bell, { size: 24, className: "text-yellow-400" }), "Friend Requests"] }), _jsx("button", { onClick: loadData, className: "text-slate-400 hover:text-white transition hover:scale-105 active:scale-95 hover:scale-105 active:scale-95", children: _jsx("span", { className: "text-sm", children: "Refresh" }) })] }), loading ? (_jsx("div", { className: "flex justify-center py-8", children: _jsx(Loader2, { size: 32, className: "text-blue-500 animate-spin" }) })) : incomingRequests.length === 0 ? (_jsx("div", { className: "text-center py-8 text-slate-400", children: "No pending friend requests." })) : (_jsx("div", { className: "space-y-3", children: incomingRequests.map((user) => (_jsxs("div", { className: "flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-slate-700/50 rounded-2xl gap-4", children: [_jsxs("div", { className: "flex items-center gap-3", children: [_jsx("div", { className: "w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-lg", children: user.name.charAt(0).toUpperCase() }), _jsxs("div", { children: [_jsx("h3", { className: "font-semibold text-white", children: user.name }), _jsxs("p", { className: "text-sm text-slate-400", children: ["@", user.username || 'user', " \u2022 Level ", user.level] })] })] }), _jsxs("div", { className: "flex items-center gap-2 w-full sm:w-auto", children: [_jsxs("button", { onClick: () => handleAcceptRequest(user.uid), className: "flex-1 sm:flex-none flex items-center justify-center gap-1 bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded-2xl transition hover:scale-105 active:scale-95 hover:scale-105 active:scale-95", children: [_jsx(Check, { size: 16 }), " Accept"] }), _jsxs("button", { onClick: () => handleRejectRequest(user.uid), className: "flex-1 sm:flex-none flex items-center justify-center gap-1 bg-slate-600 hover:bg-slate-500 text-white px-3 py-2 rounded-2xl transition hover:scale-105 active:scale-95 hover:scale-105 active:scale-95", children: [_jsx(X, { size: 16 }), " Ignore"] })] })] }, user.uid))) }))] })) : activeTab === 'add' ? (_jsxs("div", { className: "bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 animate-fade-in", children: [_jsx("h2", { className: "text-xl font-semibold text-white mb-4", children: "Find Friends" }), _jsxs("form", { onSubmit: handleSearch, className: "flex gap-2 mb-6", children: [_jsx("input", { type: "text", placeholder: "Search by username...", value: searchQuery, onChange: (e) => setSearchQuery(e.target.value), className: "flex-1 bg-slate-700 text-white px-4 py-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500" }), _jsx("button", { type: "submit", disabled: isSearching, className: "bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-2xl transition hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center gap-2", children: isSearching ? _jsx(Loader2, { size: 20, className: "animate-spin" }) : _jsx(Search, { size: 20 }) })] }), _jsxs("div", { className: "space-y-3", children: [searchResults.length === 0 && searchQuery && !isSearching && (_jsxs("p", { className: "text-slate-400 text-center py-4", children: ["No users found matching\"", searchQuery, "\""] })), searchResults.map((user) => {
-                                            var _a, _b, _c;
-                                            const isSelf = user.uid === (userProfile === null || userProfile === void 0 ? void 0 : userProfile.uid);
-                                            const isFriend = (_a = userProfile === null || userProfile === void 0 ? void 0 : userProfile.friends) === null || _a === void 0 ? void 0 : _a.includes(user.uid);
-                                            const requestSent = (_b = userProfile === null || userProfile === void 0 ? void 0 : userProfile.outgoingRequests) === null || _b === void 0 ? void 0 : _b.includes(user.uid);
-                                            const requestReceived = (_c = userProfile === null || userProfile === void 0 ? void 0 : userProfile.incomingRequests) === null || _c === void 0 ? void 0 : _c.includes(user.uid);
-                                            return (_jsxs("div", { className: "flex items-center justify-between p-4 bg-slate-700/50 rounded-2xl", children: [_jsxs("div", { className: "flex items-center gap-3", children: [_jsx("div", { className: "w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-lg", children: user.name.charAt(0).toUpperCase() }), _jsxs("div", { children: [_jsx("h3", { className: "font-semibold text-white", children: user.name }), _jsxs("p", { className: "text-sm text-slate-400", children: ["@", user.username || 'user', " \u2022 Level ", user.level] })] })] }), isSelf ? (_jsx("span", { className: "text-sm text-slate-500 px-3 py-1", children: "You" })) : isFriend ? (_jsxs("span", { className: "text-sm text-blue-400 px-3 py-1 flex items-center gap-1", children: [_jsx(Users, { size: 16 }), " Friends"] })) : requestSent ? (_jsx("span", { className: "text-sm text-yellow-500 px-3 py-1 bg-yellow-500/10 rounded-2xl", children: "Pending" })) : requestReceived ? (_jsxs("button", { onClick: () => handleAcceptRequest(user.uid), className: "bg-green-600 hover:bg-green-500 text-white px-3 py-1.5 rounded-2xl transition hover:scale-105 active:scale-95 text-sm flex items-center gap-1", children: [_jsx(Check, { size: 16 }), " Accept"] })) : (_jsx("button", { onClick: () => handleSendRequest(user.uid), className: "p-2 bg-slate-600 hover:bg-slate-500 text-white rounded-2xl transition hover:scale-105 active:scale-95 hover:scale-105 active:scale-95", title: "Send Friend Request", children: _jsx(UserPlus, { size: 20 }) }))] }, user.uid));
-                                        })] })] })) : (_jsxs("div", { className: "bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 animate-fade-in", children: [_jsxs("div", { className: "flex items-center justify-between mb-4", children: [_jsxs("h2", { className: "text-xl font-semibold text-white flex items-center gap-2", children: [activeTab === 'global' ? _jsx(Trophy, { size: 24, className: "text-yellow-400" }) : _jsx(Users, { size: 24, className: "text-blue-400" }), activeTab === 'global' ? 'Global Leaderboard' : 'Friends Leaderboard'] }), _jsx("button", { onClick: loadData, className: "text-slate-400 hover:text-white transition hover:scale-105 active:scale-95 hover:scale-105 active:scale-95", children: _jsx("span", { className: "text-sm", children: "Refresh" }) })] }), loading ? (_jsx("div", { className: "flex justify-center py-8", children: _jsx(Loader2, { size: 32, className: "text-blue-500 animate-spin" }) })) : displayList.length === 0 ? (_jsx("div", { className: "text-center py-8 text-slate-400", children: activeTab === 'friends' ? "You haven't added any friends yet!" : "No data available." })) : (_jsx("div", { className: "space-y-3", children: displayList.map((entry, index) => {
+
+    const renderAvatar = (name = 'User', avatarUrl = null, sizeClass = "w-10 h-10") => {
+        if (avatarUrl) {
+            return <img src={avatarUrl} alt={name} className={`${sizeClass} rounded-full object-cover border border-slate-700/50 shrink-0 shadow-sm`} />;
+        }
+        return (
+            <div className={`${sizeClass} rounded-full bg-blue-500/20 text-blue-400 font-bold text-base flex items-center justify-center border border-blue-500/30 shrink-0`}>
+                {(name || 'U').charAt(0).toUpperCase()}
+            </div>
+        );
+    };
+
+    return (
+        <div className="flex flex-col h-full bg-slate-900">
+            {/* Header */}
+            <div className="flex items-center gap-4 p-6 border-b border-slate-700/50">
+                <button onClick={onBack} className="p-2 hover:bg-slate-800/50 backdrop-blur-sm rounded-2xl transition hover:scale-105 active:scale-95">
+                    <ChevronLeft size={24} className="text-slate-400" />
+                </button>
+                <h1 className="text-2xl font-bold text-white">Social & Friends</h1>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-1 overflow-auto p-6 custom-scrollbar">
+                <div className="max-w-2xl mx-auto space-y-6">
+                    {/* User Stats Card */}
+                    {currentProfile && (
+                        <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+                            <div className="flex items-center gap-4 mb-4">
+                                {renderAvatar(currentProfile.name, currentProfile.photoURL || currentProfile.avatar, "w-14 h-14")}
+                                <div>
+                                    <h2 className="text-xl font-bold">{currentProfile.name}</h2>
+                                    <p className="text-xs text-blue-200">Level {currentProfile.level || 1} • {currentProfile.xp || 0} XP</p>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-3 gap-4 mb-4 bg-black/20 p-3 rounded-xl backdrop-blur-sm">
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold">{currentProfile.level || 1}</div>
+                                    <div className="text-xs text-blue-200 font-medium">Level</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold">{maxStreak}</div>
+                                    <div className="text-xs text-blue-200 font-medium">Best Streak</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold">{totalCompletions}</div>
+                                    <div className="text-xs text-blue-200 font-medium">Completions</div>
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleShare}
+                                className="w-full bg-white/20 hover:bg-white/30 text-white font-semibold py-2.5 px-4 rounded-xl transition hover:scale-105 active:scale-95 flex items-center justify-center gap-2 mb-4 text-sm"
+                            >
+                                <Share2 size={18} /> Share Achievement
+                            </button>
+                            <div className="pt-3 border-t border-white/20">
+                                <h3 className="text-xs font-bold uppercase tracking-wider mb-2 text-blue-200">Contribution Heatmap</h3>
+                                <HeatmapGrid data={heatmapData} />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Navigation Tabs */}
+                    <div className="flex flex-wrap gap-2 bg-slate-800/50 backdrop-blur-sm p-1.5 rounded-2xl border border-slate-700/50">
+                        <button
+                            onClick={() => setActiveTab('feed')}
+                            className={`flex-1 min-w-[80px] py-2 text-xs font-bold rounded-xl transition hover:scale-105 active:scale-95 ${
+                                activeTab === 'feed' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+                            }`}
+                        >
+                            <Share2 size={14} className="inline mr-1.5" /> Feed
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('global')}
+                            className={`flex-1 min-w-[80px] py-2 text-xs font-bold rounded-xl transition hover:scale-105 active:scale-95 ${
+                                activeTab === 'global' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+                            }`}
+                        >
+                            <Trophy size={14} className="inline mr-1.5" /> Global
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('friends')}
+                            className={`flex-1 min-w-[80px] py-2 text-xs font-bold rounded-xl transition hover:scale-105 active:scale-95 ${
+                                activeTab === 'friends' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+                            }`}
+                        >
+                            <Users size={14} className="inline mr-1.5" /> Friends
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('add')}
+                            className={`flex-1 min-w-[80px] py-2 text-xs font-bold rounded-xl transition hover:scale-105 active:scale-95 ${
+                                activeTab === 'add' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+                            }`}
+                        >
+                            <Search size={14} className="inline mr-1.5" /> Find
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('requests')}
+                            className={`flex-1 min-w-[80px] py-2 text-xs font-bold rounded-xl transition hover:scale-105 active:scale-95 relative ${
+                                activeTab === 'requests' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+                            }`}
+                        >
+                            <Bell size={14} className="inline mr-1.5" /> Requests
+                            {pendingCount > 0 && (
+                                <span className="absolute top-1 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                            )}
+                        </button>
+                    </div>
+
+                    {/* Feed Tab */}
+                    {activeTab === 'feed' ? (
+                        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-lg font-bold text-white">Live Activity Feed</h2>
+                                <button onClick={loadGlobalFeed} className="text-xs text-blue-400 hover:underline">
+                                    Refresh
+                                </button>
+                            </div>
+                            {feedLoading ? (
+                                <div className="flex justify-center py-8">
+                                    <Loader2 size={28} className="text-blue-500 animate-spin" />
+                                </div>
+                            ) : activities.length === 0 ? (
+                                <div className="text-center py-8 text-slate-400 text-sm">No recent activity yet.</div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {activities.map(activity => (
+                                        <div key={activity.id} className="bg-slate-800/60 border border-slate-700/40 p-3.5 rounded-xl flex gap-3 items-center">
+                                            {renderAvatar(activity.profileName, activity.photoURL || activity.avatar)}
+                                            <div>
+                                                <p className="text-sm text-white">
+                                                    <span className="font-bold text-blue-400">{activity.profileName}</span> {activity.action}{' '}
+                                                    <span className="font-semibold text-slate-200">{activity.targetName}</span>
+                                                </p>
+                                                <p className="text-[10px] text-slate-400 mt-0.5">
+                                                    {new Date(activity.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ) : activeTab === 'requests' ? (
+                        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                                    <Bell size={20} className="text-yellow-400" /> Friend Requests
+                                </h2>
+                                <button onClick={loadData} className="text-xs text-blue-400 hover:underline">Refresh</button>
+                            </div>
+                            {loading ? (
+                                <div className="flex justify-center py-8">
+                                    <Loader2 size={28} className="text-blue-500 animate-spin" />
+                                </div>
+                            ) : incomingRequests.length === 0 ? (
+                                <div className="text-center py-8 text-slate-400 text-sm">No pending friend requests.</div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {incomingRequests.map((reqUser) => (
+                                        <div key={reqUser.uid} className="flex items-center justify-between p-3.5 bg-slate-800/60 border border-slate-700/40 rounded-xl gap-3">
+                                            <div className="flex items-center gap-3">
+                                                {renderAvatar(reqUser.name, reqUser.photoURL || reqUser.avatar)}
+                                                <div>
+                                                    <h3 className="font-bold text-white text-sm">{reqUser.name}</h3>
+                                                    <p className="text-xs text-slate-400">@{reqUser.username || 'user'} • Level {reqUser.level || 1}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => handleAcceptRequest(reqUser.uid)}
+                                                    className="flex items-center gap-1 bg-green-600 hover:bg-green-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition"
+                                                >
+                                                    <Check size={14} /> Accept
+                                                </button>
+                                                <button
+                                                    onClick={() => handleRejectRequest(reqUser.uid)}
+                                                    className="flex items-center gap-1 bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition"
+                                                >
+                                                    <X size={14} /> Ignore
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ) : activeTab === 'add' ? (
+                        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 space-y-4">
+                            <h2 className="text-lg font-bold text-white">Find Friends</h2>
+                            <form onSubmit={handleSearch} className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Search by username..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="flex-1 bg-slate-700/60 text-white px-4 py-2 rounded-xl text-sm border border-slate-600 focus:outline-none focus:border-blue-500"
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={isSearching}
+                                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2 disabled:opacity-50"
+                                >
+                                    {isSearching ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} Search
+                                </button>
+                            </form>
+                            <div className="space-y-3 pt-2">
+                                {searchResults.length === 0 && searchQuery && !isSearching && (
+                                    <p className="text-slate-400 text-center py-4 text-sm">No users found matching "{searchQuery}"</p>
+                                )}
+                                {searchResults.map((searchUser) => {
+                                    const isSelf = searchUser.uid === userProfile?.uid;
+                                    const isFriend = userProfile?.friends?.includes(searchUser.uid);
+                                    const requestSent = userProfile?.outgoingRequests?.includes(searchUser.uid);
+                                    const requestReceived = userProfile?.incomingRequests?.includes(searchUser.uid);
+                                    return (
+                                        <div key={searchUser.uid} className="flex items-center justify-between p-3.5 bg-slate-800/60 border border-slate-700/40 rounded-xl">
+                                            <div className="flex items-center gap-3">
+                                                {renderAvatar(searchUser.name, searchUser.photoURL || searchUser.avatar)}
+                                                <div>
+                                                    <h3 className="font-bold text-white text-sm">{searchUser.name}</h3>
+                                                    <p className="text-xs text-slate-400">@{searchUser.username || 'user'} • Level {searchUser.level || 1}</p>
+                                                </div>
+                                            </div>
+                                            {isSelf ? (
+                                                <span className="text-xs text-slate-500 font-semibold px-3 py-1">You</span>
+                                            ) : isFriend ? (
+                                                <span className="text-xs text-blue-400 font-semibold px-3 py-1 flex items-center gap-1">
+                                                    <Users size={14} /> Friends
+                                                </span>
+                                            ) : requestSent ? (
+                                                <span className="text-xs text-yellow-400 font-semibold px-3 py-1 bg-yellow-500/10 rounded-xl border border-yellow-500/20">Pending</span>
+                                            ) : requestReceived ? (
+                                                <button
+                                                    onClick={() => handleAcceptRequest(searchUser.uid)}
+                                                    className="bg-green-600 hover:bg-green-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition"
+                                                >
+                                                    Accept
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => handleSendRequest(searchUser.uid)}
+                                                    className="p-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition"
+                                                    title="Send Friend Request"
+                                                >
+                                                    <UserPlus size={16} />
+                                                </button>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ) : (
+                        /* Leaderboards (Global & Friends) */
+                        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                                    {activeTab === 'global' ? <Trophy size={20} className="text-yellow-400" /> : <Users size={20} className="text-blue-400" />}
+                                    {activeTab === 'global' ? 'Global Leaderboard' : 'Friends Leaderboard'}
+                                </h2>
+                                <button onClick={loadData} className="text-xs text-blue-400 hover:underline">Refresh</button>
+                            </div>
+                            {loading ? (
+                                <div className="flex justify-center py-8">
+                                    <Loader2 size={28} className="text-blue-500 animate-spin" />
+                                </div>
+                            ) : displayList.length === 0 ? (
+                                <div className="text-center py-8 text-slate-400 text-sm">
+                                    {activeTab === 'friends' ? "You haven't added any friends yet!" : "No data available."}
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {displayList.map((entry, index) => {
                                         const rank = index + 1;
-                                        return (_jsxs("div", { className: `group flex items-center justify-between p-3 rounded-2xl transition-all duration-300 hover:shadow-lg ${rank === 1
-                                                ? 'bg-yellow-500/20 border border-yellow-500/30'
-                                                : rank === 2
-                                                    ? 'bg-slate-700/50 border border-slate-700/50'
-                                                    : rank === 3
-                                                        ? 'bg-orange-500/20 border border-orange-500/30'
-                                                        : 'bg-slate-700 border border-transparent'}`, children: [_jsxs("div", { className: "flex items-center gap-4", children: [_jsx("div", { className: "text-2xl font-bold w-8 text-center", children: rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank }), _jsxs("div", { children: [_jsxs("h3", { className: "font-semibold text-white flex items-center gap-2", children: [entry.name, entry.uid === (userProfile === null || userProfile === void 0 ? void 0 : userProfile.uid) && (_jsx("span", { className: "text-[10px] bg-blue-500 text-white px-2 py-0.5 rounded-full", children: "You" }))] }), _jsxs("p", { className: "text-sm text-slate-400", children: ["@", entry.username || 'user', " \u2022 Level ", entry.level] })] })] }), _jsxs("div", { className: "flex items-center gap-4", children: [_jsxs("div", { className: "text-right", children: [_jsx("div", { className: "text-lg font-bold text-blue-400", children: entry.xp }), _jsx("div", { className: "text-xs text-slate-400", children: "XP" })] }), activeTab === 'friends' && entry.uid !== (userProfile === null || userProfile === void 0 ? void 0 : userProfile.uid) && (_jsxs("div", { className: "flex items-center gap-2", children: [_jsxs("button", { onClick: () => setChatFriend({ id: entry.uid, name: entry.name }), className: "flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-2xl text-xs font-semibold transition hover:scale-105 active:scale-95 shadow-sm", title: "Chat with friend", children: [_jsx(MessageCircle, { size: 14 }), "Chat"] }), _jsx("button", { onClick: () => handleRemoveFriend(entry.uid), className: "p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-2xl transition hover:scale-105 active:scale-95", title: "Remove Friend", children: _jsx(UserMinus, { size: 16 }) })] }))] })] }, entry.uid));
-                                    }) }))] }))] }) }), chatFriend && (_jsx(ChatWindow, { friendName: chatFriend.name, friendId: chatFriend.id, onClose: () => setChatFriend(null) }))] }));
+                                        return (
+                                            <div
+                                                key={entry.uid}
+                                                className={`flex items-center justify-between p-3.5 rounded-2xl border transition-all ${
+                                                    rank === 1
+                                                        ? 'bg-yellow-500/10 border-yellow-500/30'
+                                                        : rank === 2
+                                                        ? 'bg-slate-800/70 border-slate-700/60'
+                                                        : rank === 3
+                                                        ? 'bg-amber-500/10 border-amber-500/30'
+                                                        : 'bg-slate-800/40 border-slate-700/30'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className="text-lg font-bold w-6 text-center font-mono text-slate-300">
+                                                        {rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank}
+                                                    </div>
+                                                    {renderAvatar(entry.name, entry.photoURL || entry.avatar)}
+                                                    <div>
+                                                        <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                                                            {entry.name}
+                                                            {entry.uid === userProfile?.uid && (
+                                                                <span className="text-[9px] bg-blue-500 text-white px-2 py-0.5 rounded-full font-bold">You</span>
+                                                            )}
+                                                        </h3>
+                                                        <p className="text-xs text-slate-400">@{entry.username || 'user'} • Level {entry.level || 1}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="text-right">
+                                                        <div className="text-sm font-bold text-blue-400">{entry.xp || 0}</div>
+                                                        <div className="text-[10px] text-slate-400 font-semibold">XP</div>
+                                                    </div>
+                                                    {activeTab === 'friends' && entry.uid !== userProfile?.uid && (
+                                                        <div className="flex items-center gap-2">
+                                                            <button
+                                                                onClick={() => setChatFriend({ id: entry.uid, name: entry.name, avatar: entry.photoURL || entry.avatar })}
+                                                                className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition"
+                                                            >
+                                                                <MessageCircle size={14} /> Chat
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleRemoveFriend(entry.uid)}
+                                                                className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition"
+                                                                title="Remove Friend"
+                                                            >
+                                                                <UserMinus size={16} />
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Floating Chat Modal */}
+            {chatFriend && (
+                <ChatWindow
+                    friendName={chatFriend.name}
+                    friendId={chatFriend.id}
+                    friendAvatar={chatFriend.avatar}
+                    onClose={() => setChatFriend(null)}
+                />
+            )}
+        </div>
+    );
 }
