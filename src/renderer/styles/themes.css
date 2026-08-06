@@ -1,0 +1,1336 @@
+/* GLOBAL THEME APPLICATION - Apply to ALL elements */
+
+/* ===== DEFAULT DARK THEME ===== */
+:root {
+  --color-primary: #E11D48;
+  --color-secondary: #F43F5E;
+  --color-accent: #FFFFFF;
+  --color-background: #0C0406;
+  --color-surface: #180A0E;
+  --color-text: #FFFFFF;
+  --color-success: #10B981;
+  --color-danger: #FF4D4D;
+  --color-border: #2B1017;
+}
+
+/* ===== DASHBOARD/AESTHETIC THEME (DEFAULT) ===== */
+html, html.dashboard {
+  --color-primary: #E11D48;
+  --color-secondary: #F43F5E;
+  --color-accent: #FFFFFF;
+  --color-background: #0C0406;
+  --color-surface: #180A0E;
+  --color-text: #FFFFFF;
+  --color-success: #10B981;
+  --color-danger: #FF4D4D;
+  --color-border: #2B1017;
+}
+
+/* ===== LIGHT THEME ===== */
+html.light {
+  --color-primary: #3B82F6;
+  --color-secondary: #10B981;
+  --color-accent: #F59E0B;
+  --color-background: #F3F4F6;
+  --color-surface: #FFFFFF;
+  --color-text: #000000;
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+  --color-border: #000000;
+}
+
+/* ===== DARK THEME ===== */
+html.dark {
+  --color-primary: #60A5FA;
+  --color-secondary: #34D399;
+  --color-accent: #FBBF24;
+  --color-background: #111827;
+  --color-surface: #1F2937;
+  --color-text: #F3F4F6;
+  --color-success: #34D399;
+  --color-danger: #F87171;
+  --color-border: #374151;
+}
+
+/* ===== OCEAN THEME ===== */
+html.ocean {
+  --color-primary: #0369A1;
+  --color-secondary: #06B6D4;
+  --color-accent: #0EA5E9;
+  --color-background: #F0F9FF;
+  --color-surface: #E0F2FE;
+  --color-text: #0C2340;
+  --color-success: #06B6D4;
+  --color-danger: #DC2626;
+  --color-border: #BAE6FD;
+}
+
+/* ===== FOREST THEME ===== */
+html.forest {
+  --color-primary: #15803D;
+  --color-secondary: #059669;
+  --color-accent: #10B981;
+  --color-background: #F0FDF4;
+  --color-surface: #DCFCE7;
+  --color-text: #166534;
+  --color-success: #16A34A;
+  --color-danger: #DC2626;
+  --color-border: #BBEF63;
+}
+
+/* ===== SUNSET THEME ===== */
+html.sunset {
+  --color-primary: #EA580C;
+  --color-secondary: #F97316;
+  --color-accent: #FB923C;
+  --color-background: #FEF3C7;
+  --color-surface: #FED7AA;
+  --color-text: #92400E;
+  --color-success: #F97316;
+  --color-danger: #DC2626;
+  --color-border: #FDBA74;
+}
+
+/* ===== MIDNIGHT THEME ===== */
+html.midnight {
+  --color-primary: #8B5CF6;
+  --color-secondary: #D946EF;
+  --color-accent: #EC4899;
+  --color-background: #0F0F1E;
+  --color-surface: #1A1A2E;
+  --color-text: #F0F1FF;
+  --color-success: #A855F7;
+  --color-danger: #FB7185;
+  --color-border: #3B3B52;
+}
+
+/* ===== BERRY THEME ===== */
+html.berry {
+  --color-primary: #7C3AED;
+  --color-secondary: #EC4899;
+  --color-accent: #F43F5E;
+  --color-background: #FAF5FF;
+  --color-surface: #F3E8FF;
+  --color-text: #581C87;
+  --color-success: #D946EF;
+  --color-danger: #BE123C;
+  --color-border: #E9D5FF;
+}
+
+/* ===== CORAL THEME ===== */
+html.coral {
+  --color-primary: #F97316;
+  --color-secondary: #FCA5A5;
+  --color-accent: #FB923C;
+  --color-background: #FEF2F2;
+  --color-surface: #FEE2E2;
+  --color-text: #7C2D12;
+  --color-success: #FB923C;
+  --color-danger: #DC2626;
+  --color-border: #FECACA;
+}
+
+/* ===== MINT THEME ===== */
+html.mint {
+  --color-primary: #0D9488;
+  --color-secondary: #22D3EE;
+  --color-accent: #A3E635;
+  --color-background: #F2FAFA;
+  --color-surface: #FFFFFF;
+  --color-text: #0F3D3A;
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+  --color-border: #C4E8E4;
+}
+
+/* ===== CALIBRATED THEME ===== */
+html.calibrated {
+  --color-primary: #EA6F9C;
+  --color-secondary: #C6B0F2;
+  --color-accent: #8AA3E8;
+  --color-background: linear-gradient(180deg, #FFF6FB 0%, #F8EBF5 44%, #F2EDFF 100%);
+  --color-surface: #FFFDFE;
+  --color-text: #273043;
+  --color-success: #25C08E;
+  --color-danger: #E35D75;
+  --color-border: #E8D9E8;
+  --calibration-wash: color-mix(in srgb, var(--color-primary) 26%, white 74%);
+  --calibration-wash-2: color-mix(in srgb, var(--color-secondary) 20%, white 80%);
+  --calibration-wash-3: color-mix(in srgb, var(--color-accent) 20%, white 80%);
+  --calibration-surface: color-mix(in srgb, var(--color-surface) 84%, white 16%);
+  --calibration-surface-strong: color-mix(in srgb, var(--color-surface) 72%, white 28%);
+  --calibration-border: color-mix(in srgb, var(--color-border) 62%, var(--color-primary) 38%);
+  --calibration-shadow: 0 20px 50px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+/* ===== EXPERIENTIAL THEMES ===== */
+
+html.monsoon {
+  --color-primary: #60A5FA;
+  --color-secondary: #38BDF8;
+  --color-accent: #A5F3FC;
+  --color-background: linear-gradient(180deg, #EAF6FF 0%, #D9EEF9 52%, #C7E4F4 100%);
+  --color-surface: #F7FBFF;
+  --color-text: #16324F;
+  --color-success: #14B8A6;
+  --color-danger: #E11D48;
+  --color-border: #C5DDF0;
+}
+
+html.black-hole {
+  --color-primary: #A855F7;
+  --color-secondary: #22D3EE;
+  --color-accent: #F8FAFC;
+  --color-background: linear-gradient(180deg, #050816 0%, #090B22 55%, #020308 100%);
+  --color-surface: #10162B;
+  --color-text: #F5F3FF;
+  --color-success: #4ADE80;
+  --color-danger: #FB7185;
+  --color-border: #28314A;
+}
+
+html.mochi {
+  --color-primary: #F9A8D4;
+  --color-secondary: #FDBA74;
+  --color-accent: #93C5FD;
+  --color-background: linear-gradient(180deg, #FFF8FB 0%, #FFF0F8 48%, #FFFDF5 100%);
+  --color-surface: #FFFFFF;
+  --color-text: #5B3A55;
+  --color-success: #34D399;
+  --color-danger: #FB7185;
+  --color-border: #F3D6E7;
+}
+
+html.tsunami {
+  --color-primary: #0EA5E9;
+  --color-secondary: #22C55E;
+  --color-accent: #67E8F9;
+  --color-background: linear-gradient(180deg, #E8FAFF 0%, #DDF6FF 48%, #C8F0FF 100%);
+  --color-surface: #F6FDFF;
+  --color-text: #0A344A;
+  --color-success: #10B981;
+  --color-danger: #E11D48;
+  --color-border: #C4E8F6;
+}
+
+html.matcha {
+  --color-primary: #22C55E;
+  --color-secondary: #84CC16;
+  --color-accent: #D9F99D;
+  --color-background: linear-gradient(180deg, #F7FBF4 0%, #EDF7E8 52%, #E2F0DB 100%);
+  --color-surface: #FCFEFB;
+  --color-text: #243B2A;
+  --color-success: #16A34A;
+  --color-danger: #DC2626;
+  --color-border: #D7E6D2;
+}
+
+html.bubble-pop {
+  --color-primary: #A78BFA;
+  --color-secondary: #67E8F9;
+  --color-accent: #F9A8D4;
+  --color-background: linear-gradient(180deg, #FBFAFF 0%, #F5F3FF 50%, #EEF9FF 100%);
+  --color-surface: #FFFFFF;
+  --color-text: #2F2C57;
+  --color-success: #34D399;
+  --color-danger: #FB7185;
+  --color-border: #E3DEF8;
+}
+
+html.meteor-shower {
+  --color-primary: #F59E0B;
+  --color-secondary: #FB7185;
+  --color-accent: #E879F9;
+  --color-background: linear-gradient(180deg, #120A1F 0%, #1A1035 52%, #0B0A13 100%);
+  --color-surface: #1D1632;
+  --color-text: #F3E8FF;
+  --color-success: #4ADE80;
+  --color-danger: #FB7185;
+  --color-border: #382B58;
+}
+
+html.arcane {
+  --color-primary: #8B5CF6;
+  --color-secondary: #D946EF;
+  --color-accent: #C084FC;
+  --color-background: linear-gradient(180deg, #120C22 0%, #20103A 48%, #090711 100%);
+  --color-surface: #1C1230;
+  --color-text: #F4EEFF;
+  --color-success: #4ADE80;
+  --color-danger: #FB7185;
+  --color-border: #3A2959;
+}
+
+/* ===== GRADIENT THEMES ===== */
+html.gradient-sunset {
+  --color-primary: #F97316;
+  --color-secondary: #EF4444;
+  --color-accent: #FB923C;
+  --color-background: linear-gradient(135deg, #FEF3C7 0%, #FED7AA 100%);
+  --color-surface: #FED7AA;
+  --color-text: #92400E;
+  --color-success: #F97316;
+  --color-danger: #DC2626;
+  --color-border: #FDBA74;
+}
+
+html.gradient-midnight {
+  --color-primary: #8B5CF6;
+  --color-secondary: #7C3AED;
+  --color-accent: #A78BFA;
+  --color-background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
+  --color-surface: #312E81;
+  --color-text: #E0E7FF;
+  --color-success: #A78BFA;
+  --color-danger: #FB7185;
+  --color-border: #6366F1;
+}
+
+html.gradient-ocean {
+  --color-primary: #0284C7;
+  --color-secondary: #06B6D4;
+  --color-accent: #0EA5E9;
+  --color-background: linear-gradient(135deg, #082F49 0%, #164E63 100%);
+  --color-surface: #164E63;
+  --color-text: #CFFAFE;
+  --color-success: #06B6D4;
+  --color-danger: #DC2626;
+  --color-border: #0369A1;
+}
+
+html.gradient-forest {
+  --color-primary: #15803D;
+  --color-secondary: #059669;
+  --color-accent: #10B981;
+  --color-background: linear-gradient(135deg, #0B4F2F 0%, #166534 100%);
+  --color-surface: #166534;
+  --color-text: #DCFCE7;
+  --color-success: #10B981;
+  --color-danger: #DC2626;
+  --color-border: #059669;
+}
+
+html.gradient-berry {
+  --color-primary: #D946EF;
+  --color-secondary: #EC4899;
+  --color-accent: #F43F5E;
+  --color-background: linear-gradient(135deg, #3F0F63 0%, #6B21A8 100%);
+  --color-surface: #6B21A8;
+  --color-text: #F3E8FF;
+  --color-success: #D946EF;
+  --color-danger: #FB7185;
+  --color-border: #9D174D;
+}
+
+/* ===== GLOBAL THEME APPLICATION ===== */
+
+html, body, #root {
+  background: var(--color-background) !important;
+  color: var(--color-text) !important;
+}
+
+html.calibrated body {
+  position: relative;
+  isolation: isolate;
+  overflow-x: hidden;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+html.calibrated body::before,
+html.calibrated body::after {
+  content: '';
+  position: fixed;
+  inset: -12%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+html.calibrated body::before {
+  background:
+    radial-gradient(circle at 16% 14%, color-mix(in srgb, var(--color-primary) 34%, transparent) 0%, transparent 34%),
+    radial-gradient(circle at 84% 18%, color-mix(in srgb, var(--color-secondary) 28%, transparent) 0%, transparent 30%),
+    radial-gradient(circle at 68% 78%, color-mix(in srgb, var(--color-accent) 24%, transparent) 0%, transparent 32%),
+    radial-gradient(circle at 28% 78%, color-mix(in srgb, var(--color-primary) 18%, transparent) 0%, transparent 28%);
+  filter: blur(30px) saturate(125%);
+  opacity: 0.96;
+  transform: translateZ(0);
+}
+
+html.calibrated body::after {
+  inset: auto -8% -16% -8%;
+  height: 46vh;
+  background:
+    linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--color-surface) 50%, transparent) 58%, color-mix(in srgb, var(--color-primary) 14%, transparent) 100%),
+    radial-gradient(120% 85% at 50% 0%, color-mix(in srgb, var(--color-secondary) 24%, transparent) 0%, transparent 62%);
+  clip-path: ellipse(88% 92% at 50% 100%);
+  filter: blur(8px);
+  opacity: 0.95;
+}
+
+html.monsoon body,
+html.black-hole body,
+html.mochi body,
+html.tsunami body,
+html.matcha body,
+html.bubble-pop body,
+html.meteor-shower body,
+html.arcane body {
+  position: relative;
+  isolation: isolate;
+  overflow-x: hidden;
+  background-attachment: scroll;
+  background-size: cover;
+}
+
+html.monsoon body::before,
+html.black-hole body::before,
+html.mochi body::before,
+html.tsunami body::before,
+html.matcha body::before,
+html.bubble-pop body::before,
+html.meteor-shower body::before,
+html.arcane body::before,
+html.monsoon body::after,
+html.black-hole body::after,
+html.mochi body::after,
+html.tsunami body::after,
+html.matcha body::after,
+html.bubble-pop body::after,
+html.meteor-shower body::after,
+html.arcane body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform, opacity;
+}
+
+html.monsoon body::before {
+  background-image:
+    linear-gradient(115deg, transparent 0 46%, color-mix(in srgb, var(--color-primary) 28%, transparent) 46% 48%, transparent 48% 100%),
+    linear-gradient(115deg, transparent 0 62%, color-mix(in srgb, var(--color-secondary) 24%, transparent) 62% 64%, transparent 64% 100%),
+    linear-gradient(115deg, transparent 0 78%, color-mix(in srgb, var(--color-primary) 22%, transparent) 78% 80%, transparent 80% 100%);
+  background-size: 160px 160px, 220px 220px, 280px 280px;
+  filter: blur(0.2px);
+  opacity: 0.75;
+  animation: rainFall 2.2s linear infinite;
+}
+
+html.monsoon body::after {
+  inset: auto 0 0 0;
+  height: 38vh;
+  background:
+    radial-gradient(50% 65% at 50% 100%, color-mix(in srgb, var(--color-secondary) 22%, transparent) 0%, transparent 65%),
+    radial-gradient(circle at 20% 40%, color-mix(in srgb, var(--color-primary) 16%, transparent) 0%, transparent 16%),
+    radial-gradient(circle at 72% 56%, color-mix(in srgb, var(--color-accent) 14%, transparent) 0%, transparent 18%);
+  filter: blur(16px);
+  opacity: 0.9;
+}
+
+html.black-hole body::before {
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.0) 0 14%, color-mix(in srgb, var(--color-primary) 14%, transparent) 18%, transparent 20%),
+    radial-gradient(circle at 50% 50%, transparent 0 32%, color-mix(in srgb, var(--color-secondary) 18%, transparent) 33% 34%, transparent 35%),
+    radial-gradient(circle at 50% 50%, transparent 0 46%, color-mix(in srgb, var(--color-primary) 12%, transparent) 47% 48%, transparent 49%);
+  filter: blur(2px) saturate(140%);
+  opacity: 0.9;
+  animation: orbitPulse 28s linear infinite;
+}
+
+html.black-hole body::after {
+  inset: 0;
+  background:
+    radial-gradient(circle at 22% 28%, color-mix(in srgb, var(--color-accent) 16%, transparent) 0%, transparent 12%),
+    radial-gradient(circle at 78% 20%, color-mix(in srgb, var(--color-secondary) 18%, transparent) 0%, transparent 10%),
+    radial-gradient(circle at 70% 74%, color-mix(in srgb, var(--color-primary) 10%, transparent) 0%, transparent 14%);
+  filter: blur(18px);
+  opacity: 0.8;
+}
+
+html.mochi body::before {
+  background:
+    radial-gradient(circle at 18% 22%, color-mix(in srgb, var(--color-primary) 22%, transparent) 0%, transparent 12%),
+    radial-gradient(circle at 76% 18%, color-mix(in srgb, var(--color-secondary) 18%, transparent) 0%, transparent 14%),
+    radial-gradient(circle at 62% 78%, color-mix(in srgb, var(--color-accent) 18%, transparent) 0%, transparent 13%);
+  filter: blur(14px);
+  opacity: 0.7;
+  animation: floatDrift 24s ease-in-out infinite;
+}
+
+html.mochi body::after {
+  inset: auto 6% 4% 6%;
+  height: 34vh;
+  border-radius: 48% 52% 40% 60% / 42% 48% 52% 58%;
+  background:
+    radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--color-surface) 78%, transparent) 0%, transparent 34%),
+    radial-gradient(circle at 30% 70%, color-mix(in srgb, var(--color-primary) 22%, transparent) 0%, transparent 14%),
+    radial-gradient(circle at 72% 66%, color-mix(in srgb, var(--color-secondary) 16%, transparent) 0%, transparent 12%);
+  filter: blur(12px);
+  opacity: 0.7;
+}
+
+html.tsunami body::before {
+  inset: 0;
+  height: 46vh;
+  background:
+    linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--color-primary) 18%, transparent) 40%, transparent 100%),
+    radial-gradient(100% 70% at 50% 100%, color-mix(in srgb, var(--color-secondary) 34%, transparent) 0%, transparent 60%);
+  clip-path: ellipse(95% 72% at 50% 100%);
+  filter: blur(5px);
+  opacity: 0.85;
+  animation: waveShift 24s ease-in-out infinite;
+}
+
+html.tsunami body::after {
+  inset: auto 0 0 0;
+  height: 24vh;
+  background:
+    radial-gradient(60% 90% at 50% 100%, color-mix(in srgb, var(--color-accent) 24%, transparent) 0%, transparent 60%),
+    linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--color-primary) 10%, transparent) 50%, transparent 100%);
+  opacity: 0.78;
+}
+
+html.matcha body::before {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 14px, color-mix(in srgb, var(--color-border) 26%, transparent) 14px 15px),
+    repeating-linear-gradient(90deg, transparent 0 14px, color-mix(in srgb, var(--color-border) 20%, transparent) 14px 15px),
+    radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--color-primary) 18%, transparent) 0%, transparent 18%),
+    radial-gradient(circle at 82% 24%, color-mix(in srgb, var(--color-secondary) 16%, transparent) 0%, transparent 16%);
+  filter: blur(0.1px);
+  opacity: 0.35;
+}
+
+html.matcha body::after {
+  inset: auto 10% 8% 10%;
+  height: 24vh;
+  border-radius: 999px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 85%, transparent) 0%, transparent 100%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-border) 50%, transparent);
+  opacity: 0.75;
+}
+
+html.bubble-pop body::before {
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 18%, color-mix(in srgb, var(--color-surface) 72%, transparent) 0 7%, transparent 8%),
+    radial-gradient(circle at 22% 70%, color-mix(in srgb, var(--color-primary) 22%, transparent) 0 9%, transparent 10%),
+    radial-gradient(circle at 48% 28%, color-mix(in srgb, var(--color-secondary) 18%, transparent) 0 11%, transparent 12%),
+    radial-gradient(circle at 68% 62%, color-mix(in srgb, var(--color-accent) 18%, transparent) 0 10%, transparent 11%),
+    radial-gradient(circle at 84% 22%, color-mix(in srgb, var(--color-surface) 64%, transparent) 0 8%, transparent 9%);
+  filter: blur(3px);
+  opacity: 0.72;
+  animation: bubbleFloat 22s ease-in-out infinite;
+}
+
+html.bubble-pop body::after {
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 44%, color-mix(in srgb, var(--color-primary) 16%, transparent) 0 10%, transparent 11%),
+    radial-gradient(circle at 32% 18%, color-mix(in srgb, var(--color-secondary) 16%, transparent) 0 8%, transparent 9%),
+    radial-gradient(circle at 56% 74%, color-mix(in srgb, var(--color-surface) 70%, transparent) 0 12%, transparent 13%),
+    radial-gradient(circle at 78% 36%, color-mix(in srgb, var(--color-accent) 16%, transparent) 0 9%, transparent 10%);
+  opacity: 0.55;
+  animation: bubbleDrift 30s ease-in-out infinite;
+}
+
+html.meteor-shower body::before {
+  background:
+    radial-gradient(circle at 10% 18%, rgba(255, 255, 255, 0.85) 0 0.7%, transparent 0.8%),
+    radial-gradient(circle at 24% 40%, rgba(255, 255, 255, 0.75) 0 0.55%, transparent 0.65%),
+    radial-gradient(circle at 68% 26%, rgba(255, 255, 255, 0.65) 0 0.55%, transparent 0.7%),
+    linear-gradient(115deg, transparent 0 49%, color-mix(in srgb, var(--color-accent) 22%, transparent) 50%, transparent 51% 100%),
+    linear-gradient(115deg, transparent 0 69%, color-mix(in srgb, var(--color-primary) 18%, transparent) 70%, transparent 71% 100%);
+  background-size: auto, auto, auto, 220px 220px, 300px 300px;
+  opacity: 0.65;
+  animation: starsDrift 32s linear infinite;
+}
+
+html.meteor-shower body::after {
+  inset: 0;
+  height: 36vh;
+  background:
+    radial-gradient(circle at 15% 38%, color-mix(in srgb, var(--color-primary) 24%, transparent) 0%, transparent 8%),
+    radial-gradient(circle at 82% 24%, color-mix(in srgb, var(--color-secondary) 18%, transparent) 0%, transparent 7%);
+  filter: blur(14px);
+  opacity: 0.65;
+}
+
+html.arcane body::before {
+  background:
+    radial-gradient(circle at 20% 22%, color-mix(in srgb, var(--color-primary) 24%, transparent) 0%, transparent 16%),
+    radial-gradient(circle at 72% 28%, color-mix(in srgb, var(--color-secondary) 20%, transparent) 0%, transparent 15%),
+    radial-gradient(circle at 50% 76%, color-mix(in srgb, var(--color-accent) 16%, transparent) 0%, transparent 18%),
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 26px, color-mix(in srgb, var(--color-border) 26%, transparent) 26px 27px);
+  filter: blur(6px) saturate(130%);
+  opacity: 0.68;
+  animation: glowPulse 22s ease-in-out infinite;
+}
+
+html.arcane body::after {
+  inset: 0;
+  height: 42vh;
+  background:
+    radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--color-primary) 22%, transparent) 0%, transparent 25%),
+    radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--color-secondary) 18%, transparent) 0%, transparent 18%);
+  opacity: 0.7;
+}
+
+html.calibrated #root {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== STRUCTURAL BACKGROUND OVERRIDES ===== */
+/* Only override slate/gray/zinc backgrounds used for layout structure */
+
+.bg-slate-900,
+.bg-gray-900,
+.bg-zinc-900 {
+  background: var(--color-background) !important;
+}
+
+.bg-slate-800,
+.bg-gray-800,
+.bg-zinc-800 {
+  background-color: var(--color-surface) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important;
+  border-color: var(--color-border) !important;
+}
+
+html.calibrated .bg-slate-900,
+html.calibrated .bg-gray-900,
+html.calibrated .bg-zinc-900,
+html.calibrated .bg-slate-800,
+html.calibrated .bg-gray-800,
+html.calibrated .bg-zinc-800,
+html.calibrated .bg-white {
+  background-color: var(--calibration-surface) !important;
+  border-color: var(--calibration-border) !important;
+  box-shadow: var(--calibration-shadow) !important;
+  backdrop-filter: blur(24px) saturate(130%);
+}
+
+html.calibrated .bg-slate-800\/50,
+html.calibrated .bg-slate-700\/30 {
+  background-color: var(--calibration-surface-strong) !important;
+  border-color: var(--calibration-border) !important;
+  box-shadow: var(--calibration-shadow) !important;
+  backdrop-filter: blur(24px) saturate(130%);
+}
+
+html.calibrated .rounded-lg {
+  border-radius: 1rem !important;
+}
+
+html.calibrated .rounded-xl {
+  border-radius: 1.25rem !important;
+}
+
+html.calibrated .rounded-2xl {
+  border-radius: 1.75rem !important;
+}
+
+.rounded-2xl {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important;
+}
+
+.bg-slate-700,
+.bg-gray-700,
+.bg-zinc-700 {
+  background-color: color-mix(in srgb, var(--color-surface) 80%, var(--color-border) 20%) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important;
+  border-color: var(--color-border) !important;
+}
+
+.bg-slate-600,
+.bg-gray-600,
+.bg-zinc-600 {
+  background-color: color-mix(in srgb, var(--color-surface) 40%, var(--color-border) 60%) !important;
+}
+
+/* Semi-transparent structural surfaces */
+.bg-slate-800\/50 {
+  background-color: color-mix(in srgb, var(--color-surface) 80%, transparent) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important;
+  backdrop-filter: blur(12px) !important;
+  border-color: var(--color-border) !important;
+}
+
+.bg-slate-700\/30 {
+  background-color: color-mix(in srgb, var(--color-border) 30%, transparent) !important;
+}
+
+/* Structural gradient stops - Properly overriding tailwind variables */
+.from-slate-900 {
+  --tw-gradient-from: var(--color-background) !important;
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.via-slate-800 {
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--color-surface), var(--tw-gradient-to) !important;
+}
+
+.to-slate-900 {
+  --tw-gradient-to: var(--color-background) !important;
+}
+
+/* ===== PRIMARY COLOR OVERRIDES ===== */
+/* Remap blue accent classes to theme primary */
+
+.text-blue-400,
+.text-blue-500 {
+  color: var(--color-primary) !important;
+}
+
+.bg-blue-600,
+.bg-blue-500 {
+  background-color: var(--color-primary) !important;
+}
+
+.bg-blue-500\/20 {
+  background-color: color-mix(in srgb, var(--color-primary) 20%, transparent) !important;
+}
+
+.ring-blue-400,
+.ring-blue-500 {
+  --tw-ring-color: var(--color-primary) !important;
+}
+
+.border-blue-400,
+.border-blue-500 {
+  border-color: var(--color-primary) !important;
+}
+
+.border-t-blue-500 {
+  border-top-color: var(--color-primary) !important;
+}
+
+/* Primary gradient accents (buttons, logos) */
+.from-blue-500,
+.from-blue-600 {
+  --tw-gradient-from: var(--color-primary) !important;
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.to-purple-600,
+.to-purple-700 {
+  --tw-gradient-to: var(--color-secondary) !important;
+}
+
+/* ===== PURPLE CLASSES (PRIMARY/SECONDARY) ===== */
+.bg-purple-600, .bg-purple-500 {
+  background-color: var(--color-primary) !important;
+}
+.hover\:bg-purple-500:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 80%, white) !important;
+}
+.hover\:bg-purple-700:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 80%, black) !important;
+}
+.text-purple-400, .text-purple-300 {
+  color: color-mix(in srgb, var(--color-primary) 80%, transparent) !important;
+}
+.border-purple-500, .border-purple-400 {
+  border-color: var(--color-primary) !important;
+}
+.border-purple-500\/30 {
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent) !important;
+}
+.focus\:ring-purple-500:focus {
+  --tw-ring-color: var(--color-primary) !important;
+}
+.from-purple-600, .from-purple-500 {
+  --tw-gradient-from: var(--color-primary) !important;
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+.to-indigo-600 {
+  --tw-gradient-to: var(--color-secondary) !important;
+}
+.from-indigo-500, .from-indigo-900\/50 {
+  --tw-gradient-from: var(--color-secondary) !important;
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+.via-purple-500 {
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--color-primary), var(--tw-gradient-to) !important;
+}
+.bg-purple-500\/20 {
+  background-color: color-mix(in srgb, var(--color-primary) 20%, transparent) !important;
+}
+.bg-purple-500\/10 {
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent) !important;
+}
+.bg-purple-400\/10 {
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent) !important;
+}
+.shadow-purple-500\/20 {
+  --tw-shadow-color: color-mix(in srgb, var(--color-primary) 20%, transparent) !important;
+  --tw-shadow: var(--tw-shadow-colored) !important;
+}
+
+/* ===== INDIGO CLASSES (SECONDARY) ===== */
+.bg-indigo-600 {
+  background-color: var(--color-secondary) !important;
+}
+
+/* ===== TEXT OVERRIDES ===== */
+
+/* Map hardcoded text-white to the theme text color so it's visible in light mode */
+.text-white {
+  color: var(--color-text) !important;
+}
+
+/* Subtitles and muted text */
+.text-slate-400,
+.text-gray-400,
+.text-zinc-400 {
+  color: color-mix(in srgb, var(--color-text) 65%, transparent) !important;
+}
+
+/* ===== FORM ELEMENTS & BORDERS ===== */
+input, textarea, select {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 9999px !important;
+  color: var(--color-text) !important;
+}
+textarea {
+  border-radius: 16px !important;
+}
+.border-slate-700, .border-slate-800, .border-gray-700, .border-gray-800, .border-slate-700\/50 {
+  border-color: var(--color-border) !important;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* EXCEPT for buttons/accent cards which actually need white text for contrast against solid primary colors */
+[class*="from-blue-5"].text-white, [class*="from-blue-5"] .text-white,
+[class*="from-blue-6"].text-white, [class*="from-blue-6"] .text-white,
+[class*="from-purple-6"].text-white, [class*="from-purple-6"] .text-white,
+[class*="from-green-6"].text-white, [class*="from-green-6"] .text-white,
+[class*="bg-blue-5"].text-white, [class*="bg-blue-5"] .text-white,
+[class*="bg-blue-6"].text-white, [class*="bg-blue-6"] .text-white,
+[class*="bg-red-6"].text-white, [class*="bg-red-6"] .text-white,
+[class*="bg-green-6"].text-white, [class*="bg-green-6"] .text-white,
+[class*="bg-white"].text-white,
+[class*="bg-purple-5"].text-white, [class*="bg-purple-5"] .text-white,
+[class*="bg-purple-6"].text-white, [class*="bg-purple-6"] .text-white,
+[class*="bg-emerald-5"].text-white, [class*="bg-emerald-5"] .text-white,
+[class*="bg-emerald-6"].text-white, [class*="bg-emerald-6"] .text-white,
+[class*="from-emerald"].text-white, [class*="from-emerald"] .text-white,
+[class*="from-purple"].text-white, [class*="from-purple"] .text-white,
+[class*="from-indigo"].text-white, [class*="from-indigo"] .text-white,
+[class*="from-amber"].text-white, [class*="from-amber"] .text-white,
+[class*="from-yellow"].text-white, [class*="from-yellow"] .text-white {
+  color: #FFFFFF !important;
+}
+
+.text-slate-400,
+.text-gray-400,
+.text-zinc-400 {
+  color: color-mix(in srgb, var(--color-text) 65%, transparent) !important;
+}
+
+.text-slate-500,
+.text-gray-500,
+.text-zinc-500 {
+  color: color-mix(in srgb, var(--color-text) 75%, transparent) !important;
+}
+
+.text-slate-300,
+.text-gray-300,
+.text-zinc-300 {
+  color: color-mix(in srgb, var(--color-text) 80%, transparent) !important;
+}
+
+.text-slate-200,
+.text-gray-200,
+.text-zinc-200 {
+  color: color-mix(in srgb, var(--color-text) 90%, transparent) !important;
+}
+
+/* ===== BORDER OVERRIDES ===== */
+
+.border-slate-700,
+.border-slate-600,
+.border-gray-700,
+.border-gray-600,
+.border-zinc-700 {
+  border-color: var(--color-border) !important;
+}
+
+/* ===== HOVER STATE OVERRIDES ===== */
+
+.hover\:bg-slate-700:hover,
+.hover\:bg-slate-800:hover {
+  background-color: color-mix(in srgb, var(--color-surface) 60%, var(--color-border) 40%) !important;
+}
+
+.hover\:bg-slate-600:hover {
+  background-color: color-mix(in srgb, var(--color-surface) 40%, var(--color-border) 60%) !important;
+}
+
+.hover\:text-white:hover {
+  color: var(--color-text) !important;
+}
+
+.hover\:bg-blue-700:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 80%, black) !important;
+}
+
+/* ===== SUCCESS / EMERALD / GREEN COLORS ===== */
+
+.text-green-400,
+.text-green-300,
+.text-emerald-400,
+.text-emerald-300,
+.text-emerald-100 {
+  color: var(--color-success) !important;
+}
+
+.bg-emerald-500,
+.bg-emerald-400,
+.bg-emerald-600,
+.bg-green-600,
+.bg-green-500 {
+  background-color: var(--color-success) !important;
+}
+
+.bg-emerald-500\/20,
+.bg-green-500\/20 {
+  background-color: color-mix(in srgb, var(--color-success) 20%, transparent) !important;
+}
+
+.bg-emerald-400\/10 {
+  background-color: color-mix(in srgb, var(--color-success) 10%, transparent) !important;
+}
+
+.bg-emerald-500\/5 {
+  background-color: color-mix(in srgb, var(--color-success) 5%, transparent) !important;
+}
+
+.border-emerald-500\/30,
+.border-green-500\/30 {
+  border-color: color-mix(in srgb, var(--color-success) 30%, transparent) !important;
+}
+
+.border-emerald-500\/20 {
+  border-color: color-mix(in srgb, var(--color-success) 20%, transparent) !important;
+}
+
+.from-emerald-600,
+.from-emerald-500\/30 {
+  --tw-gradient-from: var(--color-success) !important;
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.to-emerald-700 {
+  --tw-gradient-to: color-mix(in srgb, var(--color-success) 80%, black) !important;
+}
+
+.from-emerald-950\/90 {
+  --tw-gradient-from: color-mix(in srgb, var(--color-success) 90%, black) !important;
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.via-teal-500\/30 {
+  --tw-gradient-stops: var(--tw-gradient-from), color-mix(in srgb, var(--color-success) 30%, transparent), var(--tw-gradient-to) !important;
+}
+
+.to-cyan-500\/30 {
+  --tw-gradient-to: color-mix(in srgb, var(--color-success) 30%, transparent) !important;
+}
+
+.hover\:bg-green-500:hover {
+  background-color: color-mix(in srgb, var(--color-success) 80%, white) !important;
+}
+
+.from-green-500\/10 {
+  --tw-gradient-from: color-mix(in srgb, var(--color-success) 10%, transparent) !important;
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.from-green-600\/80 {
+  --tw-gradient-from: color-mix(in srgb, var(--color-success) 80%, transparent) !important;
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.to-emerald-500\/10 {
+  --tw-gradient-to: color-mix(in srgb, var(--color-success) 10%, transparent) !important;
+}
+
+.to-emerald-800\/80 {
+  --tw-gradient-to: color-mix(in srgb, var(--color-success) 80%, transparent) !important;
+}
+
+/* ===== DANGER / PINK / ROSE / RED COLORS ===== */
+
+.text-red-400,
+.text-red-300,
+.text-rose-400 {
+  color: var(--color-danger) !important;
+}
+
+.bg-red-600 {
+  background-color: var(--color-danger) !important;
+}
+
+.hover\:bg-red-700:hover {
+  background-color: color-mix(in srgb, var(--color-danger) 80%, black) !important;
+}
+
+.from-pink-500 {
+  --tw-gradient-from: var(--color-danger) !important;
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.to-pink-600,
+.to-pink-500 {
+  --tw-gradient-to: var(--color-danger) !important;
+}
+
+.bg-rose-500\/20 {
+  background-color: color-mix(in srgb, var(--color-danger) 20%, transparent) !important;
+}
+
+/* ===== AMBER / YELLOW / ORANGE CLASSES (ACCENT) ===== */
+
+.text-yellow-400,
+.text-amber-400 {
+  color: var(--color-accent) !important;
+}
+
+.from-yellow-400,
+.from-yellow-300,
+.from-amber-500 {
+  --tw-gradient-from: var(--color-accent) !important;
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.to-amber-600,
+.to-amber-500,
+.to-orange-500 {
+  --tw-gradient-to: var(--color-accent) !important;
+}
+
+.from-amber-500\/20 {
+  --tw-gradient-from: color-mix(in srgb, var(--color-accent) 20%, transparent) !important;
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.to-orange-500\/20 {
+  --tw-gradient-to: color-mix(in srgb, var(--color-accent) 20%, transparent) !important;
+}
+
+.bg-amber-500\/20 {
+  background-color: color-mix(in srgb, var(--color-accent) 20%, transparent) !important;
+}
+
+.border-amber-500\/30 {
+  border-color: color-mix(in srgb, var(--color-accent) 30%, transparent) !important;
+}
+
+/* ===== FORM ELEMENTS ===== */
+
+input,
+textarea,
+select {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+
+html.calibrated input,
+html.calibrated textarea,
+html.calibrated select {
+  background-color: var(--calibration-surface) !important;
+  border-color: var(--calibration-border) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 10px 25px color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+html.calibrated .todo-composer-input {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 9999px !important;
+  padding: 0.25rem 0 !important;
+}
+
+html.calibrated .todo-composer-input::placeholder {
+  color: color-mix(in srgb, var(--color-text) 54%, transparent) !important;
+  opacity: 1 !important;
+}
+
+html.calibrated .todo-composer-input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html.calibrated .bg-blue-500\/20,
+html.calibrated .bg-sky-500\/20,
+html.calibrated .bg-cyan-500\/20,
+html.calibrated .bg-purple-500\/20,
+html.calibrated .bg-rose-500\/20,
+html.calibrated .bg-emerald-500\/20,
+html.calibrated .bg-orange-500\/20 {
+  background-color: color-mix(in srgb, var(--color-primary) 20%, white 80%) !important;
+  color: color-mix(in srgb, var(--color-primary) 72%, var(--color-text) 28%) !important;
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--color-primary) 14%, transparent) !important;
+}
+
+html.calibrated .text-blue-400,
+html.calibrated .text-sky-400,
+html.calibrated .text-cyan-400,
+html.calibrated .text-purple-400,
+html.calibrated .text-rose-400,
+html.calibrated .text-emerald-400,
+html.calibrated .text-orange-400 {
+  color: color-mix(in srgb, var(--color-primary) 78%, var(--color-secondary) 22%) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text) !important;
+  opacity: 0.4 !important;
+}
+
+/* ===== DIVIDERS ===== */
+
+hr,
+.divider {
+  border-color: var(--color-border) !important;
+}
+
+/* ===== SCROLLBAR ===== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-accent);
+}
+
+/* ===== FOCUS STATES ===== */
+
+*:focus-visible {
+  outline-color: var(--color-primary);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+
+/* ===== SMOOTH THEME TRANSITIONS ===== */
+
+html, body, #root {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.calibrated *,
+html.calibrated *::before,
+html.calibrated *::after {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+@keyframes rainFall {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to { background-position: -200px 800px, -300px 1100px, -400px 1400px; }
+}
+
+@keyframes orbitPulse {
+  from { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.02); }
+  to { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes floatDrift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -14px, 0); }
+}
+
+@keyframes waveShift {
+  0%, 100% { transform: translate3d(0, 0, 0) scaleX(1); }
+  50% { transform: translate3d(0, -12px, 0) scaleX(1.02); }
+}
+
+@keyframes starsDrift {
+  from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+  to { background-position: 120px 220px, 180px 260px, 240px 320px, 300px 360px, 360px 420px; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.62; transform: scale(1); }
+  50% { opacity: 0.82; transform: scale(1.02); }
+}
+
+@keyframes bubbleFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(0, -10px, 0) scale(1.01); }
+  66% { transform: translate3d(0, 8px, 0) scale(0.99); }
+}
+
+@keyframes bubbleDrift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -12px, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.monsoon body::before,
+  html.black-hole body::before,
+  html.mochi body::before,
+  html.tsunami body::before,
+  html.bubble-pop body::before,
+  html.meteor-shower body::before,
+  html.arcane body::before {
+    animation: none !important;
+  }
+
+  html.monsoon body::after,
+  html.black-hole body::after,
+  html.mochi body::after,
+  html.tsunami body::after,
+  html.bubble-pop body::after,
+  html.meteor-shower body::after,
+  html.arcane body::after {
+    animation: none !important;
+  }
+
+  html.monsoon body,
+  html.black-hole body,
+  html.mochi body,
+  html.tsunami body,
+  html.matcha body,
+  html.bubble-pop body,
+  html.meteor-shower body,
+  html.arcane body {
+    background-attachment: scroll;
+  }
+}
+
+/* 3D Flying Bubbles Background */
+.bubble-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.bubble-3d {
+  position: absolute;
+  bottom: -120px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.65) 15%,
+    rgba(167, 139, 250, 0.4) 40%,
+    rgba(103, 232, 249, 0.3) 65%,
+    rgba(249, 168, 212, 0.2) 85%,
+    transparent 100%
+  );
+  box-shadow:
+    inset -5px -5px 14px rgba(124, 92, 252, 0.35),
+    inset 4px 4px 10px rgba(255, 255, 255, 0.85),
+    0 12px 28px rgba(103, 232, 249, 0.22);
+  will-change: transform, opacity;
+  animation: floatUp3D var(--bubble-duration, 14s) linear infinite;
+  animation-delay: var(--bubble-delay, 0s);
+  left: var(--bubble-left, 50%);
+  width: var(--bubble-size, 60px);
+  height: var(--bubble-size, 60px);
+}
+
+.bubble-3d::before {
+  content: '';
+  position: absolute;
+  top: 14%;
+  left: 18%;
+  width: 28%;
+  height: 18%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  transform: rotate(-35deg);
+}
+
+.bubble-3d::after {
+  content: '';
+  position: absolute;
+  bottom: 16%;
+  right: 20%;
+  width: 20%;
+  height: 14%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  transform: rotate(25deg);
+}
+
+@keyframes floatUp3D {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--bubble-opacity, 0.85);
+    transform: translate3d(calc(var(--bubble-wobble, 20px) * 0.5), -12vh, 0) scale(1) rotate(15deg);
+  }
+  30% {
+    transform: translate3d(calc(var(--bubble-wobble, 20px) * -1), -35vh, 0) scale(1.05) rotate(-10deg);
+  }
+  50% {
+    transform: translate3d(calc(var(--bubble-wobble, 20px) * 0.8), -60vh, 0) scale(0.98) rotate(20deg);
+  }
+  75% {
+    transform: translate3d(calc(var(--bubble-wobble, 20px) * -0.6), -85vh, 0) scale(1.02) rotate(-15deg);
+    opacity: var(--bubble-opacity, 0.85);
+  }
+  100% {
+    transform: translate3d(0, -118vh, 0) scale(1.2) rotate(30deg);
+    opacity: 0;
+  }
+}
+
