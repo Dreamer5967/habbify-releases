@@ -142,13 +142,22 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
       })
       localStorage.setItem('profiles', JSON.stringify(newProfiles))
 
-      const updatedCurrent = state.currentProfile?.id === targetId
-        ? (() => {
-            const newXP = (state.currentProfile.xp || 0) + amount
-            const newLevel = Math.floor(newXP / 200) + 1
-            return { ...state.currentProfile, xp: newXP, level: newLevel, updatedAt: getTrueDate().toISOString() }
-          })()
-        : state.currentProfile
+      let updatedCurrent = state.currentProfile;
+      if (state.currentProfile?.id === targetId) {
+        const newXP = (state.currentProfile.xp || 0) + amount
+        const newLevel = Math.floor(newXP / 200) + 1
+        updatedCurrent = { ...state.currentProfile, xp: newXP, level: newLevel, updatedAt: getTrueDate().toISOString() }
+        
+        // Sync to auth store for cloud leaderboard & friends!
+        try {
+          const authState = (window as any).__authStore?.getState?.() || (import('./authStore').then(m => m.useAuthStore.getState()).then(a => a.userProfile && a.updateUserProfile({ xp: newXP, level: newLevel })).catch(() => {}));
+          if (authState && typeof authState.updateUserProfile === 'function' && authState.userProfile) {
+            authState.updateUserProfile({ xp: newXP, level: newLevel });
+          }
+        } catch (e) {
+          console.error('Failed syncing XP to auth store:', e)
+        }
+      }
 
       return {
         profiles: newProfiles,

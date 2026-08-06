@@ -1,4 +1,3 @@
-import { jsx as _jsx } from "react/jsx-runtime";
 import React, { useMemo, memo } from 'react';
 import { getTrueDate } from '../utils/timeUtils';
 
@@ -26,25 +25,39 @@ function HeatmapGrid({ data }) {
         }
         return days;
     }, []);
+
     const getColor = (count) => {
         if (count === 0)
-            return 'bg-slate-800/80';
+            return 'bg-[color-mix(in_srgb,var(--color-surface)_80%,var(--color-border))] border border-[var(--color-border)]/50';
         if (count === 1)
-            return 'bg-green-900/70';
+            return 'bg-emerald-500/30 border border-emerald-500/50';
         if (count === 2)
-            return 'bg-green-800';
+            return 'bg-emerald-500/50';
         if (count === 3)
-            return 'bg-green-700';
+            return 'bg-emerald-500/75';
         if (count === 4)
-            return 'bg-green-600';
-        if (count === 5)
-            return 'bg-green-500';
-        return 'bg-green-400';
+            return 'bg-emerald-500';
+        return 'bg-emerald-400 font-bold';
     };
-    return (_jsx("div", { className: "p-6 bg-slate-900 dark:bg-slate-900 border border-slate-700/50 dark:border-slate-700/50 rounded-2xl overflow-hidden shadow-lg", children: _jsx("div", { className: "w-full overflow-x-auto pb-2 custom-scrollbar", children: _jsx("div", { className: "grid grid-flow-col gap-1 w-max", style: { gridTemplateRows: 'repeat(7, 1fr)', contain: 'content' }, children: grid.map((day) => {
-                    const count = (data && data[day.dateStr]) || 0;
-                    return (_jsx("div", { title: `${day.dateStr}: ${count} completions`, className: `w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-[3px] cursor-pointer hover:ring-2 hover:ring-slate-400 ${getColor(count)}` }, day.dateStr));
-                }) }) }) }));
+
+    return (
+        <div className="p-6 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-lg">
+            <div className="w-full overflow-x-auto pb-2 custom-scrollbar">
+                <div className="grid grid-flow-col gap-1 w-max" style={{ gridTemplateRows: 'repeat(7, 1fr)', contain: 'content' }}>
+                    {grid.map((day) => {
+                        const count = (data && data[day.dateStr]) || 0;
+                        return (
+                            <div
+                                key={day.dateStr}
+                                title={`${day.dateStr}: ${count} completions`}
+                                className={`w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-[3px] cursor-pointer hover:ring-2 hover:ring-[var(--color-primary)] transition-all ${getColor(count)}`}
+                            />
+                        );
+                    })}
+                </div>
+            </div>
+        </div>
+    );
 }
 
 const arePropsEqual = (prevProps, nextProps) => {
@@ -62,5 +75,3 @@ const arePropsEqual = (prevProps, nextProps) => {
 };
 
 export default memo(HeatmapGrid, arePropsEqual);
-
-
