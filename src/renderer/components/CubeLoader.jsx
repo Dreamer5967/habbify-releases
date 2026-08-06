@@ -24,83 +24,86 @@ export default function CubeLoader({ text = "Loading", subtext = "shuffling the 
 
     rubiks.innerHTML = '';
 
+    // Exact sticker layout read off the provided logo artwork.
     const FINAL = {
       top: [
-        ['blue', 'yellow', 'blue'],
-        ['yellow', 'pink', 'yellow'],
-        ['blue', 'yellow', 'blue']
+        ['blue','yellow','blue'],
+        ['yellow','pink','yellow'],
+        ['blue','yellow','blue']
       ],
       front: [
-        ['green', 'yellow', 'green'],
-        ['green', 'green', 'green'],
-        ['green', 'yellow', 'green']
+        ['green','yellow','green'],
+        ['green','green','green'],
+        ['green','yellow','green']
       ],
       right: [
-        ['yellow', 'green', 'yellow'],
-        ['green', 'yellow', 'green'],
-        ['green', 'yellow', 'green']
+        ['yellow','green','yellow'],
+        ['green','yellow','green'],
+        ['green','yellow','green']
       ],
       back: [
-        ['green', 'blue', 'yellow'],
-        ['yellow', 'green', 'blue'],
-        ['blue', 'yellow', 'green']
+        ['green','blue','yellow'],
+        ['yellow','green','blue'],
+        ['blue','yellow','green']
       ],
       left: [
-        ['blue', 'green', 'yellow'],
-        ['green', 'yellow', 'blue'],
-        ['yellow', 'blue', 'green']
+        ['blue','green','yellow'],
+        ['green','yellow','blue'],
+        ['yellow','blue','green']
       ],
       bottom: [
-        ['yellow', 'blue', 'green'],
-        ['blue', 'green', 'yellow'],
-        ['green', 'yellow', 'blue']
+        ['yellow','blue','green'],
+        ['blue','green','yellow'],
+        ['green','yellow','blue']
       ]
     };
 
+    // Maps a cubie's (i,j,k) grid position -> (row,col) on each macro-face's 3x3 sticker grid.
     const FACE_RC = {
-      top:    (i, j, k) => ({ row: k, col: i }),
-      front:  (i, j, k) => ({ row: j, col: i }),
-      right:  (i, j, k) => ({ row: j, col: 2 - k }),
-      back:   (i, j, k) => ({ row: j, col: 2 - i }),
-      left:   (i, j, k) => ({ row: j, col: k }),
-      bottom: (i, j, k) => ({ row: 2 - k, col: i })
+      top:    (i,j,k) => ({ row:k,   col:i   }),
+      front:  (i,j,k) => ({ row:j,   col:i   }),
+      right:  (i,j,k) => ({ row:j,   col:2-k }),
+      back:   (i,j,k) => ({ row:j,   col:2-i }),
+      left:   (i,j,k) => ({ row:j,   col:k   }),
+      bottom: (i,j,k) => ({ row:2-k, col:i   })
     };
 
+    // Inverse of FACE_RC: given a face + (row,col), recover the (i,j,k) grid slot.
     const FACE_RC_INV = {
-      top:    (row, col) => ({ i: col, j: 0, k: row }),
-      front:  (row, col) => ({ i: col, j: row, k: 2 }),
-      right:  (row, col) => ({ i: 2, j: row, k: 2 - col }),
-      back:   (row, col) => ({ i: 2 - col, j: row, k: 0 }),
-      left:   (row, col) => ({ i: 0, j: row, k: col }),
-      bottom: (row, col) => ({ i: col, j: 2, k: 2 - row })
+      top:    (row,col) => ({ i:col,   j:0,     k:row   }),
+      front:  (row,col) => ({ i:col,   j:row,   k:2     }),
+      right:  (row,col) => ({ i:2,     j:row,   k:2-col }),
+      back:   (row,col) => ({ i:2-col, j:row,   k:0     }),
+      left:   (row,col) => ({ i:0,     j:row,   k:col   }),
+      bottom: (row,col) => ({ i:col,   j:2,     k:2-row })
     };
 
-    const FACES = ['top', 'front', 'right', 'back', 'left', 'bottom'];
+    const FACES = ['top','front','right','back','left','bottom'];
 
     const NORMAL = {
-      top:    { x: 0, y: -1, z: 0 },
-      bottom: { x: 0, y: 1, z: 0 },
-      front:  { x: 0, y: 0, z: 1 },
-      back:   { x: 0, y: 0, z: -1 },
-      left:   { x: -1, y: 0, z: 0 },
-      right:  { x: 1, y: 0, z: 0 }
+      top:    { x:0, y:-1, z:0 },
+      bottom: { x:0, y:1,  z:0 },
+      front:  { x:0, y:0,  z:1 },
+      back:   { x:0, y:0,  z:-1 },
+      left:   { x:-1, y:0, z:0 },
+      right:  { x:1, y:0,  z:0 }
     };
 
-    function nameFromVec(v) {
-      for (let i = 0; i < FACES.length; i++) {
+    function nameFromVec(v){
+      for (let i = 0; i < FACES.length; i++){
         const n = NORMAL[FACES[i]];
         if (n.x === v.x && n.y === v.y && n.z === v.z) return FACES[i];
       }
       return null;
     }
 
-    function rotateVec(axis, dir, v) {
+    function rotateVec(axis, dir, v){
       if (axis === 'X') return { x: v.x, y: -dir * v.z, z: dir * v.y };
       if (axis === 'Y') return { x: dir * v.z, y: v.y, z: -dir * v.x };
       return { x: -dir * v.y, y: dir * v.x, z: v.z };
     }
 
-    function cloneState(s) {
+    function cloneState(s){
       const out = {};
       FACES.forEach((f) => {
         out[f] = s[f].map((row) => row.slice());
@@ -109,47 +112,52 @@ export default function CubeLoader({ text = "Loading", subtext = "shuffling the 
     }
 
     const cubies = [];
-    function axisSign(dim) { return dim === 0 ? -1 : (dim === 2 ? 1 : 0); }
+    function axisSign(dim){ return dim === 0 ? -1 : (dim === 2 ? 1 : 0); }
 
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        for (let k = 0; k < 3; k++) {
-          if (i === 1 && j === 1 && k === 1) continue;
+    function buildCube(){
+      for (let i = 0; i < 3; i++){
+        for (let j = 0; j < 3; j++){
+          for (let k = 0; k < 3; k++){
+            if (i === 1 && j === 1 && k === 1) continue;
 
-          const el = document.createElement('div');
-          el.className = 'cubie';
-          el.style.transform =
-            'translate3d(' +
-            'calc(var(--cubie) * ' + axisSign(i) + '), ' +
-            'calc(var(--cubie) * ' + axisSign(j) + '), ' +
-            'calc(var(--cubie) * ' + axisSign(k) + '))';
+            const el = document.createElement('div');
+            el.className = 'cubie';
+            el.style.transform =
+              'translate3d(' +
+              'calc(var(--cubie) * ' + axisSign(i) + '), ' +
+              'calc(var(--cubie) * ' + axisSign(j) + '), ' +
+              'calc(var(--cubie) * ' + axisSign(k) + '))';
 
-          const faceKeys = [];
-          if (j === 0) faceKeys.push('top');
-          if (j === 2) faceKeys.push('bottom');
-          if (k === 2) faceKeys.push('front');
-          if (k === 0) faceKeys.push('back');
-          if (i === 0) faceKeys.push('left');
-          if (i === 2) faceKeys.push('right');
+            const faceKeys = [];
+            if (j === 0) faceKeys.push('top');
+            if (j === 2) faceKeys.push('bottom');
+            if (k === 2) faceKeys.push('front');
+            if (k === 0) faceKeys.push('back');
+            if (i === 0) faceKeys.push('left');
+            if (i === 2) faceKeys.push('right');
 
-          const faceEls = {};
-          faceKeys.forEach((fk) => {
-            const faceBox = document.createElement('div');
-            faceBox.className = 'f-' + fk;
-            const sticker = document.createElement('div');
-            sticker.className = 'sticker';
-            faceBox.appendChild(sticker);
-            el.appendChild(faceBox);
-            faceEls[fk] = sticker;
-          });
+            const faceEls = {};
+            faceKeys.forEach((fk) => {
+              const faceBox = document.createElement('div');
+              faceBox.className = 'f-' + fk;
+              const plate = document.createElement('div');
+              plate.className = 'plate';
+              const sticker = document.createElement('div');
+              sticker.className = 'sticker';
+              faceBox.appendChild(plate);
+              faceBox.appendChild(sticker);
+              el.appendChild(faceBox);
+              faceEls[fk] = sticker;
+            });
 
-          rubiks.appendChild(el);
-          cubies.push({ i, j, k, el, faces: faceEls });
+            rubiks.appendChild(el);
+            cubies.push({ i, j, k, el, faces: faceEls });
+          }
         }
       }
     }
 
-    function paint(layout) {
+    function paint(layout){
       cubies.forEach((c) => {
         Object.keys(c.faces).forEach((fk) => {
           const rc = FACE_RC[fk](c.i, c.j, c.k);
@@ -160,22 +168,22 @@ export default function CubeLoader({ text = "Loading", subtext = "shuffling the 
     }
 
     const MOVES = {
-      U: { axis: 'Y', test: (c) => c.j === 0 },
-      D: { axis: 'Y', test: (c) => c.j === 2 },
-      L: { axis: 'X', test: (c) => c.i === 0 },
-      R: { axis: 'X', test: (c) => c.i === 2 },
-      F: { axis: 'Z', test: (c) => c.k === 2 },
-      B: { axis: 'Z', test: (c) => c.k === 0 }
+      U: { axis:'Y', test: (c) => c.j === 0 },
+      D: { axis:'Y', test: (c) => c.j === 2 },
+      L: { axis:'X', test: (c) => c.i === 0 },
+      R: { axis:'X', test: (c) => c.i === 2 },
+      F: { axis:'Z', test: (c) => c.k === 2 },
+      B: { axis:'Z', test: (c) => c.k === 0 }
     };
     const MOVE_KEYS = Object.keys(MOVES);
 
-    function applyMove(state, moveKey, dir) {
+    function applyMove(state, moveKey, dir){
       const move = MOVES[moveKey];
       const next = cloneState(state);
 
       FACES.forEach((face) => {
-        for (let row = 0; row < 3; row++) {
-          for (let col = 0; col < 3; col++) {
+        for (let row = 0; row < 3; row++){
+          for (let col = 0; col < 3; col++){
             const pos = FACE_RC_INV[face](row, col);
             if (!move.test(pos)) continue;
 
@@ -195,7 +203,7 @@ export default function CubeLoader({ text = "Loading", subtext = "shuffling the 
       return next;
     }
 
-    function performTurn(moveKey, dir, duration) {
+    function performTurn(moveKey, dir, duration){
       return new Promise((resolve) => {
         const move = MOVES[moveKey];
         const group = document.createElement('div');
@@ -224,7 +232,7 @@ export default function CubeLoader({ text = "Loading", subtext = "shuffling the 
 
     let isMounted = true;
 
-    async function shuffleSequence() {
+    async function shuffleSequence(){
       if (!isMounted) return;
       shadow.style.opacity = '0.55';
       shadow.style.transform = 'scale(0.85)';
@@ -233,21 +241,21 @@ export default function CubeLoader({ text = "Loading", subtext = "shuffling the 
       const history = [];
 
       const scrambleMoves = 7;
-      for (let n = 0; n < scrambleMoves; n++) {
+      for (let n = 0; n < scrambleMoves; n++){
         if (!isMounted) return;
         const mv = MOVE_KEYS[Math.floor(Math.random() * MOVE_KEYS.length)];
         const dir = Math.random() < 0.5 ? 1 : -1;
         history.push({ mv, dir });
 
-        await performTurn(mv, dir, 180);
+        await performTurn(mv, dir, 150);
         state = applyMove(state, mv, dir);
         paint(state);
       }
 
-      for (let m = history.length - 1; m >= 0; m--) {
+      for (let m = history.length - 1; m >= 0; m--){
         if (!isMounted) return;
         const inv = -history[m].dir;
-        await performTurn(history[m].mv, inv, 160);
+        await performTurn(history[m].mv, inv, 134);
         state = applyMove(state, history[m].mv, inv);
         paint(state);
       }
@@ -259,20 +267,30 @@ export default function CubeLoader({ text = "Loading", subtext = "shuffling the 
 
       setTimeout(() => {
         if (rubiks) rubiks.classList.remove('settling');
-        if (onComplete) {
+        if (onComplete && isMounted) {
           onComplete();
         }
-      }, 640);
+      }, 534);
     }
 
+    async function loop(){
+      if (!isMounted) return;
+      await shuffleSequence();
+      if (isMounted) {
+        setTimeout(loop, 1250);
+      }
+    }
+
+    buildCube();
+
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) {
+    if (reduce){
       paint(FINAL);
       shadow.style.opacity = '1';
       shadow.style.transform = 'scale(1)';
-      if (onComplete) onComplete();
+      if (onComplete && isMounted) onComplete();
     } else {
-      shuffleSequence();
+      loop();
     }
 
     return () => {
@@ -284,7 +302,7 @@ export default function CubeLoader({ text = "Loading", subtext = "shuffling the 
     <div className={`cube-loader-wrapper ${isShrinking ? 'shrinking' : ''}`}>
       <style>{`
         .cube-loader-wrapper {
-          --bg:        #A8E6E1;
+          --bg:        #E9F0E6;
           --outline:   #3A4650;
           --green:     #A2CD9F;
           --yellow:    #F8E8A7;
@@ -361,7 +379,7 @@ export default function CubeLoader({ text = "Loading", subtext = "shuffling the 
         }
 
         .cube-loader-wrapper .rubiks.settling {
-          animation: settle .62s cubic-bezier(.22,1.8,.4,1) 1;
+          animation: settle .51s cubic-bezier(.22,1.8,.4,1) 1;
         }
 
         @keyframes settle {
@@ -376,6 +394,15 @@ export default function CubeLoader({ text = "Loading", subtext = "shuffling the 
           top: 0; left: 0;
           width: 100%; height: 100%;
           transform-style: preserve-3d;
+          will-change: transform;
+        }
+
+        .cube-loader-wrapper .plate {
+          position: absolute;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          background: var(--outline);
+          transform: translateZ(calc(var(--cubie) * -0.09));
         }
 
         .cube-loader-wrapper .cubie {
@@ -386,6 +413,7 @@ export default function CubeLoader({ text = "Loading", subtext = "shuffling the 
           margin-top: calc(var(--cubie) * -0.5);
           margin-left: calc(var(--cubie) * -0.5);
           transform-style: preserve-3d;
+          will-change: transform;
         }
 
         .cube-loader-wrapper .sticker {
