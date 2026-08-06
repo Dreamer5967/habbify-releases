@@ -284,20 +284,20 @@ export default function WeeklyTrackerScreen() {
                                                     style={
                                                         completed
                                                             ? {
-                                                                  backgroundColor: `${habit.color}40`,
+                                                                  backgroundColor: `${habit.color}35`,
                                                                   borderColor: habit.color,
                                                                   color: habit.color,
                                                               }
                                                             : today
                                                                 ? {
-                                                                      backgroundColor: '#3b82f620',
-                                                                      borderColor: '#3b82f6',
-                                                                      color: '#93c5fd',
+                                                                      backgroundColor: 'color-mix(in srgb, var(--color-primary) 18%, transparent)',
+                                                                      borderColor: 'var(--color-primary)',
+                                                                      color: 'var(--color-primary)',
                                                                   }
                                                                 : {
-                                                                      backgroundColor: '#475569',
-                                                                      borderColor: '#334155',
-                                                                      color: '#64748b',
+                                                                      backgroundColor: 'color-mix(in srgb, var(--color-surface) 85%, var(--color-background))',
+                                                                      borderColor: 'var(--color-border)',
+                                                                      color: 'color-mix(in srgb, var(--color-text) 60%, transparent)',
                                                                   }
                                                     }
                                                     title={completed ? 'Click to undo' : 'Click to complete'}
