@@ -20,7 +20,6 @@ import {
   getDocs,
   orderBy,
   limit,
-  deleteDoc,
   arrayUnion,
   arrayRemove
 } from 'firebase/firestore'
@@ -43,69 +42,6 @@ export interface UserProfile {
   incomingRequests?: string[]
   outgoingRequests?: string[]
 }
-
-const DEMO_COMMUNITY_USERS: UserProfile[] = [
-  {
-    id: 'demo_alex',
-    uid: 'demo_alex',
-    name: 'Alex Chen',
-    username: 'alexchen',
-    email: 'alex@habbify.app',
-    photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
-    level: 14,
-    xp: 2840,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'demo_sophia',
-    uid: 'demo_sophia',
-    name: 'Sophia Martinez',
-    username: 'sophiam',
-    email: 'sophia@habbify.app',
-    photoURL: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-    level: 12,
-    xp: 2310,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'demo_maya',
-    uid: 'demo_maya',
-    name: 'Maya Lin',
-    username: 'mayalin',
-    email: 'maya@habbify.app',
-    photoURL: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150',
-    level: 9,
-    xp: 1820,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'demo_sam',
-    uid: 'demo_sam',
-    name: 'Sam Rivera',
-    username: 'samrivera',
-    email: 'sam@habbify.app',
-    photoURL: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-    level: 7,
-    xp: 1450,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'demo_elena',
-    uid: 'demo_elena',
-    name: 'Elena Rostova',
-    username: 'elenar',
-    email: 'elena@habbify.app',
-    photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-    level: 6,
-    xp: 1190,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }
-]
 
 interface AuthState {
   user: User | null
@@ -273,9 +209,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   getUserProfileByUid: async (uid: string) => {
-    const foundDemo = DEMO_COMMUNITY_USERS.find(u => u.uid === uid)
-    if (foundDemo) return foundDemo
-
     try {
       const userRef = doc(db, 'users', uid)
       const userSnap = await getDoc(userRef)
@@ -297,11 +230,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         const snapshot = await getDocs(q)
         snapshot.forEach(d => remoteUsers.push(d.data() as UserProfile))
       } catch (e) {
-        console.warn('Firebase leaderboard fetch failed, falling back to community list:', e)
+        console.warn('Firebase leaderboard fetch failed:', e)
       }
 
       const current = get().userProfile
-      const allCandidates = [...remoteUsers, ...DEMO_COMMUNITY_USERS]
+      const allCandidates = [...remoteUsers]
       if (current) allCandidates.push(current)
 
       // Deduplicate by uid
@@ -329,15 +262,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         if (p) friendsList.push(p)
       }
 
-      // If user has no added friends yet, show demo friends so the tab is non-empty!
-      if (friendsList.length <= 1) {
-        DEMO_COMMUNITY_USERS.slice(0, 3).forEach(d => {
-          if (!friendsList.some(f => f.uid === d.uid)) {
-            friendsList.push(d)
-          }
-        })
-      }
-
       const map = new Map<string, UserProfile>()
       friendsList.forEach(u => map.set(u.uid, u))
       const sorted = Array.from(map.values()).sort((a, b) => (b.xp || 0) - (a.xp || 0))
@@ -351,12 +275,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   fetchGlobalFeed: async () => {
     try {
       set({ feedLoading: true })
-      const demoFeed = [
-        { id: '1', profileName: 'Alex Chen', action: 'completed habit', targetName: 'Morning Run 🏃‍♂️', timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString() },
-        { id: '2', profileName: 'Sophia Martinez', action: 'reached Level 12', targetName: '🔥 Legend Status', timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString() },
-        { id: '3', profileName: 'Maya Lin', action: 'completed milestone', targetName: 'Milestone 2: Read 15 Pages', timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString() },
-      ]
-      set({ activities: demoFeed, feedLoading: false })
+      set({ activities: [], feedLoading: false })
     } catch (e) {
       set({ feedLoading: false })
     }
@@ -378,9 +297,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   checkUsernameAvailability: async (username: string) => {
     const qStr = username.toLowerCase().trim()
-    const matchDemo = DEMO_COMMUNITY_USERS.some(u => u.username?.toLowerCase() === qStr)
-    if (matchDemo) return false
-
     try {
       const usersRef = collection(db, 'users')
       const q = query(usersRef, where('username', '==', qStr))
@@ -411,12 +327,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       })
     } catch (e) {}
 
-    const demoResults = DEMO_COMMUNITY_USERS.filter(u =>
-      (u.name && u.name.toLowerCase().includes(qStr)) || (u.username && u.username.toLowerCase().includes(qStr))
-    )
-
     const map = new Map<string, UserProfile>()
-    ;[...remoteResults, ...demoResults].forEach(u => map.set(u.uid, u))
+    remoteResults.forEach(u => map.set(u.uid, u))
     return Array.from(map.values())
   },
 
@@ -497,11 +409,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   syncLocalDataToFirestore: async (localData) => {
     const state = get()
     if (!state.user) throw new Error('No user logged in')
-    // sync logic
   },
 
   loadUserData: async () => {
-    // load user data
     return {}
   }
 }))

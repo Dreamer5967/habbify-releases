@@ -196,23 +196,23 @@ export default function SocialScreen({ onBack }) {
                                     <p className="text-xs text-blue-200">Level {currentProfile.level || 1} • {currentProfile.xp || 0} XP</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-3 gap-4 mb-4 bg-black/20 p-3 rounded-xl backdrop-blur-sm">
+                            <div className="grid grid-cols-3 gap-4 mb-4 bg-slate-950/80 p-3.5 rounded-2xl border border-slate-700/60 shadow-inner">
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold">{currentProfile.level || 1}</div>
-                                    <div className="text-xs text-blue-200 font-medium">Level</div>
+                                    <div className="text-2xl font-black text-white">{currentProfile.level || 1}</div>
+                                    <div className="text-xs text-slate-300 font-bold uppercase tracking-wider">Level</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold">{maxStreak}</div>
-                                    <div className="text-xs text-blue-200 font-medium">Best Streak</div>
+                                    <div className="text-2xl font-black text-white">{maxStreak}</div>
+                                    <div className="text-xs text-slate-300 font-bold uppercase tracking-wider">Best Streak</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold">{totalCompletions}</div>
-                                    <div className="text-xs text-blue-200 font-medium">Completions</div>
+                                    <div className="text-2xl font-black text-white">{totalCompletions}</div>
+                                    <div className="text-xs text-slate-300 font-bold uppercase tracking-wider">Completions</div>
                                 </div>
                             </div>
                             <button
                                 onClick={handleShare}
-                                className="w-full bg-white/20 hover:bg-white/30 text-white font-semibold py-2.5 px-4 rounded-xl transition hover:scale-105 active:scale-95 flex items-center justify-center gap-2 mb-4 text-sm"
+                                className="w-full bg-white hover:bg-slate-100 text-slate-900 font-extrabold py-2.5 px-4 rounded-xl transition hover:scale-105 active:scale-95 flex items-center justify-center gap-2 mb-4 text-sm shadow-md"
                             >
                                 <Share2 size={18} /> Share Achievement
                             </button>
