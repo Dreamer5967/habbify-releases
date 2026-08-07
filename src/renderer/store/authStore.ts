@@ -290,7 +290,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   fetchGlobalLeaderboard: async () => {
     try {
-      set({ loading: true })
       const remoteUsers: UserProfile[] = []
       try {
         const usersRef = collection(db, 'users')
@@ -310,10 +309,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       allCandidates.forEach(u => map.set(u.uid, u))
       const leaderboard = Array.from(map.values()).sort((a, b) => (b.xp || 0) - (a.xp || 0))
 
-      set({ globalLeaderboard: leaderboard, loading: false })
+      set({ globalLeaderboard: leaderboard })
     } catch (e) {
       console.error('Global leaderboard failed:', e)
-      set({ loading: false })
     }
   },
 
