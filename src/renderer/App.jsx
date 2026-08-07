@@ -121,12 +121,14 @@ export default function App() {
                 if (cloudData.settings) {
                     const localSavedTheme = localStorage.getItem('theme');
                     const localCustomTheme = localStorage.getItem('customTheme');
+                    const activeTheme = localSavedTheme || cloudData.settings.theme || 'dashboard';
                     const mergedSettings = {
                         ...cloudData.settings,
-                        theme: localSavedTheme || cloudData.settings.theme || 'dashboard',
+                        theme: activeTheme,
                         customTheme: localCustomTheme ? JSON.parse(localCustomTheme) : cloudData.settings.customTheme
                     };
                     setSettings(mergedSettings);
+                    applyTheme(activeTheme, mergedSettings.customTheme);
                 }
                 // New trackers
                 if (cloudData.goals) {

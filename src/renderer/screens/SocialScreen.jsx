@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ChevronLeft, Trophy, Users, Search, Bell, Share2, Loader2, Check, X, UserPlus, UserMinus, MessageCircle } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useHabitStore } from '../store/habitStore';
@@ -36,6 +36,12 @@ export default function SocialScreen({ onBack }) {
     const [incomingRequests, setIncomingRequests] = useState([]);
     const [chatFriend, setChatFriend] = useState(null);
 
+    // Guard safe arrays to prevent blank screen crashes
+    const safeHabits = habits || [];
+    const safeGlobalLeaderboard = globalLeaderboard || [];
+    const safeFriendsLeaderboard = friendsLeaderboard || [];
+    const safeActivities = activities || [];
+
     // Sync profile level/xp to authStore & cloud user profile
     useEffect(() => {
         if (currentProfile && userProfile) {
@@ -48,29 +54,42 @@ export default function SocialScreen({ onBack }) {
     }, [currentProfile?.xp, currentProfile?.level]);
 
     const loadData = async () => {
-        await fetchGlobalLeaderboard();
-        await getFriendsLeaderboard();
-        if (userProfile?.incomingRequests?.length) {
-            const requestsData = await Promise.all(
-                userProfile.incomingRequests.map(uid => useAuthStore.getState().getUserProfileByUid(uid))
-            );
-            setIncomingRequests(requestsData.filter(Boolean));
-        } else {
-            setIncomingRequests([]);
+        try {
+            await fetchGlobalLeaderboard();
+            await getFriendsLeaderboard();
+            if (userProfile?.incomingRequests?.length) {
+                const requestsData = await Promise.all(
+                    userProfile.incomingRequests.map(uid => useAuthStore.getState().getUserProfileByUid(uid))
+                );
+                setIncomingRequests(requestsData.filter(Boolean));
+            } else {
+                setIncomingRequests([]);
+            }
+        } catch (e) {
+            console.error('Failed to load social data:', e);
         }
     };
 
     const loadGlobalFeed = async () => {
-        await fetchGlobalFeed();
+        try {
+            await fetchGlobalFeed();
+        } catch (e) {
+            console.error('Failed to load global feed:', e);
+        }
     };
 
     const handleSearch = async (e) => {
         e.preventDefault();
         if (!searchQuery.trim()) return;
         setIsSearching(true);
-        const results = await searchUsersByUsername(searchQuery.trim());
-        setSearchResults(results);
-        setIsSearching(false);
+        try {
+            const results = await searchUsersByUsername(searchQuery.trim());
+            setSearchResults(results || []);
+        } catch (e) {
+            toast.error('Search failed');
+        } finally {
+            setIsSearching(false);
+        }
     };
 
     const handleSendRequest = async (targetUid) => {
@@ -79,7 +98,7 @@ export default function SocialScreen({ onBack }) {
             toast.success('Friend request sent!');
             loadData();
         } catch (error) {
-            toast.error(error.message || 'Failed to send request');
+            toast.error(error?.message || 'Failed to send request');
         }
     };
 
@@ -114,9 +133,12 @@ export default function SocialScreen({ onBack }) {
         }
     };
 
+    const maxStreak = safeHabits.reduce((max, h) => Math.max(max, h?.currentStreak || 0), 0);
+    const totalCompletions = safeHabits.reduce((sum, h) => sum + (h?.totalCompletions || 0), 0);
+
     const handleShare = () => {
         if (!currentProfile) return;
-        const text = `🏆 I'm Level ${currentProfile.level} on Habbify! Streak: ${maxStreak} days. Track habits with me!`;
+        const text = `🏆 I'm Level ${currentProfile.level || 1} on Habbify! Streak: ${maxStreak} days. Track habits with me!`;
         if (navigator.share) {
             navigator.share({ title: 'My Habbify Progress', text }).catch(() => {});
         } else {
@@ -125,23 +147,20 @@ export default function SocialScreen({ onBack }) {
         }
     };
 
-    const maxStreak = habits.reduce((max, h) => Math.max(max, h.currentStreak || 0), 0);
-    const totalCompletions = habits.reduce((sum, h) => sum + (h.totalCompletions || 0), 0);
-
-    const displayList = activeTab === 'global' ? globalLeaderboard : friendsLeaderboard;
+    const displayList = activeTab === 'global' ? safeGlobalLeaderboard : safeFriendsLeaderboard;
     const pendingCount = userProfile?.incomingRequests?.length || 0;
 
     const heatmapData = useMemo(() => {
         const data = {};
-        habits.forEach(h => {
-            if (h.completionHistory) {
+        safeHabits.forEach(h => {
+            if (h && h.completionHistory && Array.isArray(h.completionHistory)) {
                 h.completionHistory.forEach(date => {
                     data[date] = (data[date] || 0) + 1;
                 });
             }
         });
         return data;
-    }, [habits]);
+    }, [safeHabits]);
 
     const renderAvatar = (name = 'User', avatarUrl = null, sizeClass = "w-10 h-10") => {
         if (avatarUrl) {
@@ -264,11 +283,11 @@ export default function SocialScreen({ onBack }) {
                                 <div className="flex justify-center py-8">
                                     <Loader2 size={28} className="text-blue-500 animate-spin" />
                                 </div>
-                            ) : activities.length === 0 ? (
+                            ) : safeActivities.length === 0 ? (
                                 <div className="text-center py-8 text-slate-400 text-sm">No recent activity yet.</div>
                             ) : (
                                 <div className="space-y-3">
-                                    {activities.map(activity => (
+                                    {safeActivities.map(activity => (
                                         <div key={activity.id} className="bg-slate-800/60 border border-slate-700/40 p-3.5 rounded-xl flex gap-3 items-center">
                                             {renderAvatar(activity.profileName, activity.photoURL || activity.avatar)}
                                             <div>
@@ -277,7 +296,7 @@ export default function SocialScreen({ onBack }) {
                                                     <span className="font-semibold text-slate-200">{activity.targetName}</span>
                                                 </p>
                                                 <p className="text-[10px] text-slate-400 mt-0.5">
-                                                    {new Date(activity.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    {activity.timestamp ? new Date(activity.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recently'}
                                                 </p>
                                             </div>
                                         </div>

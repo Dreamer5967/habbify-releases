@@ -57,7 +57,16 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   updateVersion: '',
   setUpdateReady: (ready, version = '') => set({ updateReady: ready, updateVersion: version }),
  settings: null,
- setSettings: (settings) => set({ settings}),
+  setSettings: (settings) => {
+    if (settings.theme) {
+      localStorage.setItem('theme', settings.theme)
+      if (settings.customTheme) {
+        localStorage.setItem('customTheme', JSON.stringify(settings.customTheme))
+      }
+      applyTheme(settings.theme, settings.customTheme)
+    }
+    set({ settings })
+  },
  updateSettings: (updates) => set((state) => {
     const current = state.settings || {
       theme: 'dashboard',
