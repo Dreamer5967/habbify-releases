@@ -373,30 +373,6 @@ export default function SettingsScreen({ onBack }) {
                         </div>
                     </div>
 
-                    {/* App Update Banner */}
-                    {updateReady && (
-                        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 shadow-xl flex items-center justify-between border border-blue-400/30 animate-fade-in">
-                            <div>
-                                <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
-                                    <Download size={22} className="animate-bounce" /> Update Available!
-                                </h3>
-                                <p className="text-blue-100 text-sm">
-                                    A new version {updateVersion ? `(v${updateVersion})` : ''} has been downloaded and is ready to install.
-                                </p>
-                            </div>
-                            <button
-                                onClick={() => {
-                                    if (window.electron && window.electron.installUpdate) {
-                                        window.electron.installUpdate();
-                                    }
-                                }}
-                                className="bg-white text-blue-900 font-bold px-6 py-3 rounded-xl shadow hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all"
-                            >
-                                Install & Restart
-                            </button>
-                        </div>
-                    )}
-
                     {/* Theme Customization */}
                     <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 space-y-4 border border-slate-700/50">
                         <h2 className="text-lg font-semibold text-white flex items-center gap-2">
