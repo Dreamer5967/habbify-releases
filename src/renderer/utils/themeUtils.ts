@@ -185,7 +185,7 @@ const THEME_COLORS: Record<string, CustomTheme> = {
     danger: '#FB7185',
     border: '#5C2080',
   },
-  calibrated: {
+  strawberry: {
     primary: '#EA6F9C',
     secondary: '#C6B0F2',
     accent: '#8AA3E8',
@@ -329,7 +329,7 @@ export const applyTheme = (themeName: string, customTheme?: CustomTheme) => {
   
   // Remove all theme classes from html
   htmlElement.classList.remove(
-    'light', 'dark', 'ocean', 'forest', 'sunset', 'midnight', 'berry', 'coral', 'mint', 'dashboard', 'calibrated',
+    'light', 'dark', 'ocean', 'forest', 'sunset', 'midnight', 'berry', 'coral', 'mint', 'dashboard', 'strawberry',
     'monsoon', 'black-hole', 'mochi', 'tsunami', 'matcha', 'bubble-pop', 'meteor-shower', 'arcane',
     'gradient-sunset', 'gradient-midnight', 'gradient-ocean', 'gradient-forest', 'gradient-berry', 'custom'
   )

@@ -144,7 +144,7 @@ html.mint {
 }
 
 /* ===== CALIBRATED THEME ===== */
-html.calibrated {
+html.strawberry {
   --color-primary: #EA6F9C;
   --color-secondary: #C6B0F2;
   --color-accent: #8AA3E8;
@@ -329,7 +329,7 @@ html, body, #root {
   color: var(--color-text) !important;
 }
 
-html.calibrated body {
+html.strawberry body {
   position: relative;
   isolation: isolate;
   overflow-x: hidden;
@@ -337,8 +337,8 @@ html.calibrated body {
   background-size: cover;
 }
 
-html.calibrated body::before,
-html.calibrated body::after {
+html.strawberry body::before,
+html.strawberry body::after {
   content: '';
   position: fixed;
   inset: -12%;
@@ -346,7 +346,7 @@ html.calibrated body::after {
   z-index: 0;
 }
 
-html.calibrated body::before {
+html.strawberry body::before {
   background:
     radial-gradient(circle at 16% 14%, color-mix(in srgb, var(--color-primary) 34%, transparent) 0%, transparent 34%),
     radial-gradient(circle at 84% 18%, color-mix(in srgb, var(--color-secondary) 28%, transparent) 0%, transparent 30%),
@@ -357,7 +357,7 @@ html.calibrated body::before {
   transform: translateZ(0);
 }
 
-html.calibrated body::after {
+html.strawberry body::after {
   inset: auto -8% -16% -8%;
   height: 46vh;
   background:
@@ -578,7 +578,7 @@ html.arcane body::after {
   opacity: 0.7;
 }
 
-html.calibrated #root {
+html.strawberry #root {
   position: relative;
   z-index: 1;
 }
@@ -600,36 +600,36 @@ html.calibrated #root {
   border-color: var(--color-border) !important;
 }
 
-html.calibrated .bg-slate-900,
-html.calibrated .bg-gray-900,
-html.calibrated .bg-zinc-900,
-html.calibrated .bg-slate-800,
-html.calibrated .bg-gray-800,
-html.calibrated .bg-zinc-800,
-html.calibrated .bg-white {
+html.strawberry .bg-slate-900,
+html.strawberry .bg-gray-900,
+html.strawberry .bg-zinc-900,
+html.strawberry .bg-slate-800,
+html.strawberry .bg-gray-800,
+html.strawberry .bg-zinc-800,
+html.strawberry .bg-white {
   background-color: var(--calibration-surface) !important;
   border-color: var(--calibration-border) !important;
   box-shadow: var(--calibration-shadow) !important;
   backdrop-filter: blur(24px) saturate(130%);
 }
 
-html.calibrated .bg-slate-800\/50,
-html.calibrated .bg-slate-700\/30 {
+html.strawberry .bg-slate-800\/50,
+html.strawberry .bg-slate-700\/30 {
   background-color: var(--calibration-surface-strong) !important;
   border-color: var(--calibration-border) !important;
   box-shadow: var(--calibration-shadow) !important;
   backdrop-filter: blur(24px) saturate(130%);
 }
 
-html.calibrated .rounded-lg {
+html.strawberry .rounded-lg {
   border-radius: 1rem !important;
 }
 
-html.calibrated .rounded-xl {
+html.strawberry .rounded-xl {
   border-radius: 1.25rem !important;
 }
 
-html.calibrated .rounded-2xl {
+html.strawberry .rounded-2xl {
   border-radius: 1.75rem !important;
 }
 
@@ -1098,16 +1098,16 @@ select {
   border-color: var(--color-border) !important;
 }
 
-html.calibrated input,
-html.calibrated textarea,
-html.calibrated select {
+html.strawberry input,
+html.strawberry textarea,
+html.strawberry select {
   background-color: var(--calibration-surface) !important;
   border-color: var(--calibration-border) !important;
   border-radius: 1rem !important;
   box-shadow: 0 10px 25px color-mix(in srgb, var(--color-primary) 8%, transparent);
 }
 
-html.calibrated .todo-composer-input {
+html.strawberry .todo-composer-input {
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -1115,35 +1115,35 @@ html.calibrated .todo-composer-input {
   padding: 0.25rem 0 !important;
 }
 
-html.calibrated .todo-composer-input::placeholder {
+html.strawberry .todo-composer-input::placeholder {
   color: color-mix(in srgb, var(--color-text) 54%, transparent) !important;
   opacity: 1 !important;
 }
 
-html.calibrated .todo-composer-input:focus {
+html.strawberry .todo-composer-input:focus {
   outline: none !important;
   box-shadow: none !important;
 }
 
-html.calibrated .bg-blue-500\/20,
-html.calibrated .bg-sky-500\/20,
-html.calibrated .bg-cyan-500\/20,
-html.calibrated .bg-purple-500\/20,
-html.calibrated .bg-rose-500\/20,
-html.calibrated .bg-emerald-500\/20,
-html.calibrated .bg-orange-500\/20 {
+html.strawberry .bg-blue-500\/20,
+html.strawberry .bg-sky-500\/20,
+html.strawberry .bg-cyan-500\/20,
+html.strawberry .bg-purple-500\/20,
+html.strawberry .bg-rose-500\/20,
+html.strawberry .bg-emerald-500\/20,
+html.strawberry .bg-orange-500\/20 {
   background-color: color-mix(in srgb, var(--color-primary) 20%, white 80%) !important;
   color: color-mix(in srgb, var(--color-primary) 72%, var(--color-text) 28%) !important;
   box-shadow: 0 12px 30px color-mix(in srgb, var(--color-primary) 14%, transparent) !important;
 }
 
-html.calibrated .text-blue-400,
-html.calibrated .text-sky-400,
-html.calibrated .text-cyan-400,
-html.calibrated .text-purple-400,
-html.calibrated .text-rose-400,
-html.calibrated .text-emerald-400,
-html.calibrated .text-orange-400 {
+html.strawberry .text-blue-400,
+html.strawberry .text-sky-400,
+html.strawberry .text-cyan-400,
+html.strawberry .text-purple-400,
+html.strawberry .text-rose-400,
+html.strawberry .text-emerald-400,
+html.strawberry .text-orange-400 {
   color: color-mix(in srgb, var(--color-primary) 78%, var(--color-secondary) 22%) !important;
 }
 
@@ -1199,9 +1199,9 @@ html, body, #root {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-html.calibrated *,
-html.calibrated *::before,
-html.calibrated *::after {
+html.strawberry *,
+html.strawberry *::before,
+html.strawberry *::after {
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 

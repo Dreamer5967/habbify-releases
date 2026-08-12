@@ -32,6 +32,7 @@ export interface GymPlan {
  profileId: string
  days: GymDay[]
  dietGuide?: DietGuide
+ personalRecords?: Record<string, { weight: string; date: string }>
  createdAt: string
  updatedAt: string
 }
@@ -47,6 +48,7 @@ interface GymState {
  updateExercise: (dayId: string, exerciseId: string, updates: Partial<Exercise>) => void
  toggleExerciseCompletion: (dayId: string, exerciseId: string, completed: boolean) => void
  setFullPlan: (days: Omit<GymDay, 'id'>[], dietGuide?: DietGuide) => void
+ checkAndUpdatePR: (exerciseName: string, weight: string) => boolean
 }
 
 const createEmptyPlan = (profileId: string): GymPlan => ({
@@ -205,5 +207,29 @@ export const useGymStore = create<GymState>((set, get) => ({
   const updatedPlan = { ...state.plan, days: newDays, dietGuide: dietGuide || state.plan.dietGuide, updatedAt: getTrueDate().toISOString()}
   saveAndSetPlan(updatedPlan, set)
   return { plan: updatedPlan}
-})
+}),
+
+  checkAndUpdatePR: (exerciseName: string, weight: string) => {
+    const state = get()
+    if (!state.plan) return false
+    const numWeight = parseFloat(weight.replace(/[^0-9.]/g, ''))
+    if (isNaN(numWeight) || numWeight <= 0) return false
+    const key = exerciseName.toLowerCase().trim()
+    const existing = state.plan.personalRecords?.[key]
+    const existingNum = existing ? parseFloat(existing.weight.replace(/[^0-9.]/g, '')) : 0
+    if (numWeight > existingNum) {
+      const updatedPlan = {
+        ...state.plan,
+        personalRecords: {
+          ...(state.plan.personalRecords || {}),
+          [key]: { weight, date: getTrueTodayString() }
+        },
+        updatedAt: getTrueDate().toISOString()
+      }
+      saveAndSetPlan(updatedPlan, set)
+      return true
+    }
+    return false
+  }
 }))
+

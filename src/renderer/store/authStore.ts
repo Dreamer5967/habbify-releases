@@ -1,11 +1,11 @@
 import { create } from 'zustand'
 import { 
   auth, 
-  googleProvider, 
   db 
 } from '../config/firebase'
 import { 
-  signInWithPopup, 
+  signInWithCredential,
+  GoogleAuthProvider,
   signOut as firebaseSignOut, 
   onAuthStateChanged,
   type User
@@ -86,42 +86,121 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signInWithGoogle: async () => {
     try {
       set({ loading: true, error: null })
-      const result = await signInWithPopup(auth, googleProvider)
-      const user = result.user
 
-      const userRef = doc(db, 'users', user.uid)
-      const userSnap = await getDoc(userRef)
+      // In Electron, signInWithPopup is broken. We use the local auth server:
+      // 1. Start a local HTTP server that serves a Google sign-in page
+      // 2. Open that page in the system browser
+      // 3. After the user signs in, the page POSTs the Google idToken back
+      // 4. Electron sends us the token via IPC
+      // 5. We complete Firebase sign-in with signInWithCredential
+      const isElectron = !!(window as any).electron
 
-      let profile: UserProfile
-      if (!userSnap.exists()) {
-        const username = (user.displayName || user.email?.split('@')[0] || 'user')
-          .toLowerCase()
-          .replace(/[^a-z0-9_]/g, '') + Math.floor(Math.random() * 1000)
+      if (isElectron) {
+        const electron = (window as any).electron
 
-        profile = {
-          id: user.uid,
-          uid: user.uid,
-          name: user.displayName || 'User',
-          email: user.email || '',
-          photoURL: user.photoURL || undefined,
-          username,
-          level: 1,
-          xp: 0,
-          createdAt: getTrueDate().toISOString(),
-          updatedAt: getTrueDate().toISOString(),
-          friends: [],
-          incomingRequests: [],
-          outgoingRequests: [],
+        // Collect Firebase config to pass to the local auth page
+        const firebaseConfig = {
+          apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+          authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+          projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+          storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+          messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+          appId: import.meta.env.VITE_FIREBASE_APP_ID,
         }
-        await setDoc(userRef, profile)
+
+        // Start the local auth server and open the login page in the system browser
+        await electron.startAuthServer(firebaseConfig)
+        electron.openExternal('http://localhost:13377/auth.html')
+
+        // Wait for the idToken to come back via IPC (the local server relays it)
+        const idToken: string = await new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => reject(new Error('Sign-in timed out. Please try again.')), 120000)
+          electron.onAuthCallback((token: string) => {
+            clearTimeout(timeout)
+            resolve(token)
+          })
+        })
+
+        // Sign into Firebase using the Google credential
+        const credential = GoogleAuthProvider.credential(idToken)
+        const result = await signInWithCredential(auth, credential)
+        const user = result.user
+
+        const userRef = doc(db, 'users', user.uid)
+        const userSnap = await getDoc(userRef)
+
+        let profile: UserProfile
+        if (!userSnap.exists()) {
+          const username = (user.displayName || user.email?.split('@')[0] || 'user')
+            .toLowerCase()
+            .replace(/[^a-z0-9_]/g, '') + Math.floor(Math.random() * 1000)
+
+          profile = {
+            id: user.uid,
+            uid: user.uid,
+            name: user.displayName || 'User',
+            email: user.email || '',
+            photoURL: user.photoURL || undefined,
+            username,
+            level: 1,
+            xp: 0,
+            createdAt: getTrueDate().toISOString(),
+            updatedAt: getTrueDate().toISOString(),
+            friends: [],
+            incomingRequests: [],
+            outgoingRequests: [],
+          }
+          await setDoc(userRef, profile)
+        } else {
+          profile = userSnap.data() as UserProfile
+        }
+
+        set({ user, userProfile: profile, loading: false })
+        localStorage.setItem('currentUserId', user.uid)
+
       } else {
-        profile = userSnap.data() as UserProfile
+        // Web / dev environment: use normal popup
+        const { signInWithPopup } = await import('firebase/auth')
+        const { googleProvider } = await import('../config/firebase')
+        const result = await signInWithPopup(auth, googleProvider)
+        const user = result.user
+
+        const userRef = doc(db, 'users', user.uid)
+        const userSnap = await getDoc(userRef)
+
+        let profile: UserProfile
+        if (!userSnap.exists()) {
+          const username = (user.displayName || user.email?.split('@')[0] || 'user')
+            .toLowerCase()
+            .replace(/[^a-z0-9_]/g, '') + Math.floor(Math.random() * 1000)
+
+          profile = {
+            id: user.uid,
+            uid: user.uid,
+            name: user.displayName || 'User',
+            email: user.email || '',
+            photoURL: user.photoURL || undefined,
+            username,
+            level: 1,
+            xp: 0,
+            createdAt: getTrueDate().toISOString(),
+            updatedAt: getTrueDate().toISOString(),
+            friends: [],
+            incomingRequests: [],
+            outgoingRequests: [],
+          }
+          await setDoc(userRef, profile)
+        } else {
+          profile = userSnap.data() as UserProfile
+        }
+
+        set({ user, userProfile: profile, loading: false })
+        localStorage.setItem('currentUserId', user.uid)
       }
 
-      set({ user, userProfile: profile, loading: false })
-      localStorage.setItem('currentUserId', user.uid)
     } catch (error: any) {
-      set({ error: error.message, loading: false })
+      console.error('Google Sign-In failed:', error)
+      set({ error: error.message || 'Sign-in failed. Please try again.', loading: false })
       throw error
     }
   },
@@ -237,9 +316,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const allCandidates = [...remoteUsers]
       if (current) allCandidates.push(current)
 
-      // Deduplicate by uid
+      // Filter out test/fake profiles & deduplicate by uid
       const map = new Map<string, UserProfile>()
-      allCandidates.forEach(u => map.set(u.uid, u))
+      allCandidates
+        .filter(u => {
+          if (!u || !u.uid) return false
+          const name = (u.displayName || u.username || '').toLowerCase()
+          return !name.includes('test') && !name.includes('fake') && !name.includes('demo') && !name.includes('dummy')
+        })
+        .forEach(u => map.set(u.uid, u))
+
       const leaderboard = Array.from(map.values()).sort((a, b) => (b.xp || 0) - (a.xp || 0))
 
       set({ globalLeaderboard: leaderboard })

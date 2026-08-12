@@ -42,7 +42,7 @@ const PRESET_THEMES = [
     { name: 'gradient-ocean', label: 'Gradient Ocean', icon: '🎨' },
     { name: 'gradient-forest', label: 'Gradient Forest', icon: '🎨' },
     { name: 'gradient-berry', label: 'Gradient Berry', icon: '🎨' },
-    { name: 'calibrated', label: 'Calibration', icon: '🎯' },
+    { name: 'strawberry', label: 'Strawberry', icon: '🍓' },
 ];
 
 export default function SettingsScreen({ onBack }) {

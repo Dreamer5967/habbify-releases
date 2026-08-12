@@ -1,9 +1,10 @@
 {
   "name": "habbify",
   "private": true,
-  "version": "1.0.9",
+  "version": "1.0.0",
   "type": "module",
   "description": "Professional habit tracker",
+  "author": "Habbify",
   "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
@@ -51,11 +52,36 @@
       ]
     },
     "win": {
-      "artifactName": "Habbify-Setup.${ext}",
+      "artifactName": "Habbify-Windows.${ext}",
+      "compression": "store",
       "target": [
-        "nsis",
-        "portable"
-      ]
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "differentialPackage": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
   },
   "dependencies": {

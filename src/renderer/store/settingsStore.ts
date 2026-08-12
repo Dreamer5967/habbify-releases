@@ -6,7 +6,7 @@ import { applyTheme } from '../utils/themeUtils'
 export interface Settings {
  id: string
  profileId: string
- theme: 'light' | 'dark' | 'system' | 'ocean' | 'forest' | 'sunset' | 'midnight' | 'berry' | 'coral' | 'mint' | 'gradient-sunset' | 'gradient-midnight' | 'gradient-ocean' | 'gradient-forest' | 'gradient-berry' | 'dashboard' | 'calibrated' | 'monsoon' | 'black-hole' | 'mochi' | 'tsunami' | 'matcha' | 'bubble-pop' | 'meteor-shower' | 'arcane' | 'custom'
+ theme: 'light' | 'dark' | 'system' | 'ocean' | 'forest' | 'sunset' | 'midnight' | 'berry' | 'coral' | 'mint' | 'gradient-sunset' | 'gradient-midnight' | 'gradient-ocean' | 'gradient-forest' | 'gradient-berry' | 'dashboard' | 'strawberry' | 'monsoon' | 'black-hole' | 'mochi' | 'tsunami' | 'matcha' | 'bubble-pop' | 'meteor-shower' | 'arcane' | 'custom'
  customTheme?: {
  primary: string
  secondary: string
