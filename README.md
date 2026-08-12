@@ -1,75 +1,124 @@
-# React + TypeScript + Vite
+# Habbify 🚀 (v1.0.0)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **The Ultimate All-in-One Gamified Habit, Fitness, Finance & Productivity Suite**
 
-Currently, two official plugins are available:
+Habbify is a state-of-the-art desktop & web application designed to track habits, gym workouts, daily routines, focus sessions, personal goals, and finances — all integrated with a gamified level & XP system, social leaderboards, and customizable themes.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🌟 Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. 🎯 Habit Tracker
+- **Smart Tracking**: Log daily, weekly, or custom habit frequencies.
+- **Contribution Heatmap**: GitHub-style activity heatmaps to visualize your consistency over 52 weeks.
+- **Streak & XP Rewards**: Earn XP for every completed habit and level up your profile.
 
-## Expanding the ESLint configuration
+### 2. 🏋️ Gym Planner & Muscle Map
+- **Anatomical Muscle Diagram**: Visual muscle group map with precise color indexing (Chest, Back, Shoulders, Biceps, Triceps, Forearms, Quads/Legs, Hamstrings, Glutes, Calves, Core).
+- **60+ Exercise Library**: Pre-built library of exercises filtered by muscle group and equipment.
+- **Personal Records (PR) Tracking**: Automatically tracks max weight PRs for Bench Press, Squats, Deadlifts, and more.
+- **Custom Workout Splits**: Build Push/Pull/Legs or custom multi-day gym routines.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 3. 🧠 Focus Timer (Pomodoro)
+- Customizable focus and break intervals.
+- Circular SVG progress visualizer with session counts and automated XP rewards upon completion.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 4. 💰 Finance Tracker
+- Log income and expenses with automatic net balance tracking.
+- Interactive category breakdown charts (Recharts) and multi-currency support.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 5. 🏆 Goal & Routine Trackers
+- Track short-term and long-term goals with spreadsheet check-ins and progress metrics.
+- Build morning/evening routine streaks.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 6. 👥 Social & Global Leaderboard
+- Real-time global & friends XP leaderboards (powered by Firebase).
+- Share habit milestones, add friends, and chat in real-time.
 
+### 🎨 25+ Themes (Including Strawberry 🍓)
+- Includes Dark, Light, Dashboard, **Strawberry 🍓**, Ocean, Forest, Sunset, Midnight, Matcha, Arcane, Tsunami, Meteor Shower, and a custom CSS variable theme builder.
+
+---
+
+## 📥 Downloading & Installation
+
+You can download pre-built installers for **macOS** and **Windows** from the [Releases](https://github.com/Dreamer5967/habbify-releases/releases) tab.
+
+---
+
+## 🛡️ Bypassing Security Warnings ("Unknown Publisher / Unsafe App")
+
+Because Habbify is an open-source project built without expensive commercial code-signing certificates (Apple Developer Program $99/yr & Windows EV Certificate $300/yr), your operating system may display a security prompt on first launch. **Habbify is 100% safe, open-source, and contains zero malware.**
+
+Follow the quick steps below to open the application:
+
+### 🍎 macOS ("Unidentified Developer" / "App Cannot Be Opened")
+
+If macOS displays: *"Habbify cannot be opened because it is from an unidentified developer"*
+
+#### **Method 1: Right-Click Open (Recommended - Takes 2 Seconds)**
+1. Locate `Habbify.app` or `Habbify-Installer.dmg` in your Downloads folder.
+2. **Right-Click** (or hold `Control` and click) the app icon.
+3. Click **Open** from the context menu.
+4. In the pop-up dialog, click **Open**. (macOS will remember this choice permanently).
+
+#### **Method 2: System Settings**
+1. Open **System Settings** on your Mac.
+2. Go to **Privacy & Security** in the sidebar.
+3. Scroll down to the **Security** section.
+4. You will see a note: *"Habbify was blocked from use because it is not from an identified developer"*.
+5. Click **Open Anyway** and enter your Mac password.
+
+#### **Method 3: Terminal Command**
+Open Terminal and run:
+```bash
+sudo xattr -rd com.apple.quarantine /Applications/Habbify.app
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 🪟 Windows ("Windows Protected Your PC / Unknown Publisher")
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+If Windows Defender SmartScreen displays: *"Windows protected your PC - Microsoft Defender SmartScreen prevented an unrecognized app from starting"*
 
+1. Click **More info** (underlined text on the blue SmartScreen banner).
+2. A new button will appear at the bottom: **Run anyway**.
+3. Click **Run anyway** to launch Habbify.
+
+---
+
+## 💻 Building & Running from Source
+
+If you prefer to build Habbify yourself from source:
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18 or higher)
+- npm (v9 or higher)
+
+### Setup Instructions
+```bash
+# Clone the repository
+git clone https://github.com/Dreamer5967/habbify-releases.git
+cd habbify-releases
+
+# Install dependencies
+npm install
+
+# Run in development mode (Vite + Electron)
+npm run electron:dev
+
+# Build local production bundle
+npm run build
+
+# Build macOS Universal installer (.dmg & .app)
+npm run electron:build
+
+# Build Windows installer (.exe)
+npm run electron:build:win
 ```
+
+---
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE` for more details.
