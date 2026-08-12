@@ -11,7 +11,7 @@ Habbify is a powerful, modern desktop application that unifies habit tracking, w
 
 ---
 
-## 📸 Screenshots & Highlights
+## 🌟 Features & Highlights
 
 | Feature | Description |
 | :--- | :--- |
@@ -35,51 +35,33 @@ Download the latest version for your platform from the [GitHub Releases](https:/
 
 ---
 
-## 🛡️ Security Warnings & Windows Defender False Positives Explained
+## 🛡️ Launch Instructions & Security Prompts
 
-### Why does Windows Defender or macOS display a warning?
+### 🪟 Windows ("Windows Protected Your PC")
 
-Habbify is **100% open-source, clean, and free of malware**. Security prompts occur because Habbify is built by an independent developer without purchasing commercial code-signing certificates (Apple Developer Program costs $99/year & Windows EV Certificates cost $300+/year).
+If Windows SmartScreen displays the prompt *"Windows protected your PC / Unknown Publisher"*:
 
----
-
-### 🪟 Windows Defender False Positive: `Trojan:Win32/Wacatac.C!ml`
-
-> [!NOTE]
-> **What does `!ml` mean?**
-> The `!ml` tag stands for **Machine Learning Heuristics**. Microsoft Windows Defender automatically flags newly generated, unsigned Electron `.exe` binaries because Electron packages a Node.js runtime and V8 JavaScript engine into a single executable. Because Windows Defender's AI model has not seen this specific file hash before, it flags it as a generic `Wacatac.C!ml` heuristic false positive.
-
-#### How to bypass Windows SmartScreen & Defender:
-
-1. **SmartScreen Banner**:
-   - On the blue prompt *"Windows protected your PC"*, click **More info**.
-   - Click the **Run anyway** button at the bottom.
-
-2. **If Windows Defender Blocks the Download**:
-   - Open **Windows Security** > **Virus & threat protection**.
-   - Click **Protection history**.
-   - Find the entry for Habbify, click **Actions**, and select **Allow on device** or **Restore**.
-   - *Optional*: You can submit the file directly to [Microsoft Security Intelligence Sample Submission](https://www.microsoft.com/wdsi/filesubmission) to accelerate false-positive clearing.
+1. Click **More info** on the blue SmartScreen window.
+2. Click **Run anyway** at the bottom to launch Habbify.
 
 ---
 
-### 🍎 macOS Gatekeeper: "Unidentified Developer / Cannot Be Opened"
+### 🍎 macOS ("Unidentified Developer / Cannot Be Opened")
 
-Apple Gatekeeper blocks apps downloaded from outside the Mac App Store that are not signed with a paid Apple Developer Certificate.
+If macOS Gatekeeper displays *"Habbify cannot be opened because it is from an unidentified developer"*:
 
-#### **Method 1: Right-Click Open (Fastest — 2 Seconds)**
-1. Open your Downloads folder and find `Habbify.app` or `Habbify-Installer.dmg`.
+#### **Method 1: Right-Click Open (Recommended — 2 Seconds)**
+1. Open your Downloads folder and locate `Habbify.app` or `Habbify-Installer.dmg`.
 2. **Right-click** (or hold `Control` and click) the Habbify icon.
 3. Click **Open** from the dropdown menu.
-4. In the pop-up modal, click **Open**. (macOS remembers this decision permanently).
+4. In the pop-up modal, click **Open**. (macOS remembers this choice permanently).
 
 #### **Method 2: System Settings**
 1. Open **System Settings** > **Privacy & Security**.
 2. Scroll down to **Security**.
-3. Under *"Habbify was blocked from use because it is not from an identified developer"*, click **Open Anyway**.
+3. Under *"Habbify was blocked from use"*, click **Open Anyway**.
 
 #### **Method 3: Terminal Command**
-If you prefer command line:
 ```bash
 sudo xattr -rd com.apple.quarantine /Applications/Habbify.app
 ```
@@ -87,8 +69,6 @@ sudo xattr -rd com.apple.quarantine /Applications/Habbify.app
 ---
 
 ## 🛠️ Building & Running From Source
-
-If you want to inspect the source code or build the binaries yourself:
 
 ### Requirements
 - [Node.js](https://nodejs.org/) (v18.0 or later)
