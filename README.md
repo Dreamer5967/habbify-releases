@@ -1,124 +1,125 @@
-# Habbify 🚀 (v1.0.0)
+# 🚀 Habbify (v1.0.0)
+
+[![Version](https://img.shields.io/badge/version-1.0.0-purple.svg)](https://github.com/Dreamer5967/habbify-releases/releases/tag/v1.0.0-release)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-brightgreen.svg)](https://github.com/Dreamer5967/habbify-releases/releases)
+[![Build](https://img.shields.io/badge/built%20with-Electron%20%2B%20React-61dafb.svg)](https://electronjs.org)
 
 > **The Ultimate All-in-One Gamified Habit, Fitness, Finance & Productivity Suite**
 
-Habbify is a state-of-the-art desktop & web application designed to track habits, gym workouts, daily routines, focus sessions, personal goals, and finances — all integrated with a gamified level & XP system, social leaderboards, and customizable themes.
+Habbify is a powerful, modern desktop application that unifies habit tracking, workout planning with color-indexed muscle maps, Pomodoro focus timers, personal goal tracking, financial budgeting, and real-time social leaderboards — all packaged into a sleek, themeable interface.
 
 ---
 
-## 🌟 Key Features
+## 📸 Screenshots & Highlights
 
-### 1. 🎯 Habit Tracker
-- **Smart Tracking**: Log daily, weekly, or custom habit frequencies.
-- **Contribution Heatmap**: GitHub-style activity heatmaps to visualize your consistency over 52 weeks.
-- **Streak & XP Rewards**: Earn XP for every completed habit and level up your profile.
-
-### 2. 🏋️ Gym Planner & Muscle Map
-- **Anatomical Muscle Diagram**: Visual muscle group map with precise color indexing (Chest, Back, Shoulders, Biceps, Triceps, Forearms, Quads/Legs, Hamstrings, Glutes, Calves, Core).
-- **60+ Exercise Library**: Pre-built library of exercises filtered by muscle group and equipment.
-- **Personal Records (PR) Tracking**: Automatically tracks max weight PRs for Bench Press, Squats, Deadlifts, and more.
-- **Custom Workout Splits**: Build Push/Pull/Legs or custom multi-day gym routines.
-
-### 3. 🧠 Focus Timer (Pomodoro)
-- Customizable focus and break intervals.
-- Circular SVG progress visualizer with session counts and automated XP rewards upon completion.
-
-### 4. 💰 Finance Tracker
-- Log income and expenses with automatic net balance tracking.
-- Interactive category breakdown charts (Recharts) and multi-currency support.
-
-### 5. 🏆 Goal & Routine Trackers
-- Track short-term and long-term goals with spreadsheet check-ins and progress metrics.
-- Build morning/evening routine streaks.
-
-### 6. 👥 Social & Global Leaderboard
-- Real-time global & friends XP leaderboards (powered by Firebase).
-- Share habit milestones, add friends, and chat in real-time.
-
-### 🎨 25+ Themes (Including Strawberry 🍓)
-- Includes Dark, Light, Dashboard, **Strawberry 🍓**, Ocean, Forest, Sunset, Midnight, Matcha, Arcane, Tsunami, Meteor Shower, and a custom CSS variable theme builder.
+| Feature | Description |
+| :--- | :--- |
+| 🎯 **Habit Tracker** | 52-week GitHub-style contribution heatmaps, streak counters, and custom habit schedules. |
+| 🏋️ **Gym Planner** | Interactive 10-group anatomical muscle diagram with precise color indexing & 60+ exercises. |
+| 🧠 **Focus Timer** | Pomodoro timer with SVG progress rings, ambient sounds, and automated XP rewards. |
+| 💰 **Finance Tracker** | Budget logging, category pie breakdown charts, and real-time net balance metrics. |
+| 👥 **Social Leaderboard** | Real-time global & friends XP leaderboards powered by cloud sync. |
+| 🍓 **25+ Themes** | Dark, Light, Dashboard, **Strawberry 🍓**, Ocean, Forest, Sunset, Midnight, Arcane, and custom styling. |
 
 ---
 
-## 📥 Downloading & Installation
+## 📥 Download Installers
 
-You can download pre-built installers for **macOS** and **Windows** from the [Releases](https://github.com/Dreamer5967/habbify-releases/releases) tab.
+Download the latest version for your platform from the [GitHub Releases](https://github.com/Dreamer5967/habbify-releases/releases/tag/v1.0.0-release) page:
+
+* 🍏 **macOS Universal Installer**: [`Habbify-Installer.dmg`](https://github.com/Dreamer5967/habbify-releases/releases/download/v1.0.0-release/Habbify-Installer.dmg) (Supports Apple Silicon M1/M2/M3 & Intel Macs)
+* 🍏 **macOS Portable ZIP**: [`Habbify-Installer.zip`](https://github.com/Dreamer5967/habbify-releases/releases/download/v1.0.0-release/Habbify-Installer.zip)
+* 🪟 **Windows Installer**: [`Habbify-Windows.exe`](https://github.com/Dreamer5967/habbify-releases/releases/download/v1.0.0-release/Habbify-Windows.exe) (64-bit Windows Setup)
+* 🪟 **Windows Portable ZIP**: [`Habbify-Windows.zip`](https://github.com/Dreamer5967/habbify-releases/releases/download/v1.0.0-release/Habbify-Windows.zip)
 
 ---
 
-## 🛡️ Bypassing Security Warnings ("Unknown Publisher / Unsafe App")
+## 🛡️ Security Warnings & Windows Defender False Positives Explained
 
-Because Habbify is an open-source project built without expensive commercial code-signing certificates (Apple Developer Program $99/yr & Windows EV Certificate $300/yr), your operating system may display a security prompt on first launch. **Habbify is 100% safe, open-source, and contains zero malware.**
+### Why does Windows Defender or macOS display a warning?
 
-Follow the quick steps below to open the application:
+Habbify is **100% open-source, clean, and free of malware**. Security prompts occur because Habbify is built by an independent developer without purchasing commercial code-signing certificates (Apple Developer Program costs $99/year & Windows EV Certificates cost $300+/year).
 
-### 🍎 macOS ("Unidentified Developer" / "App Cannot Be Opened")
+---
 
-If macOS displays: *"Habbify cannot be opened because it is from an unidentified developer"*
+### 🪟 Windows Defender False Positive: `Trojan:Win32/Wacatac.C!ml`
 
-#### **Method 1: Right-Click Open (Recommended - Takes 2 Seconds)**
-1. Locate `Habbify.app` or `Habbify-Installer.dmg` in your Downloads folder.
-2. **Right-Click** (or hold `Control` and click) the app icon.
-3. Click **Open** from the context menu.
-4. In the pop-up dialog, click **Open**. (macOS will remember this choice permanently).
+> [!NOTE]
+> **What does `!ml` mean?**
+> The `!ml` tag stands for **Machine Learning Heuristics**. Microsoft Windows Defender automatically flags newly generated, unsigned Electron `.exe` binaries because Electron packages a Node.js runtime and V8 JavaScript engine into a single executable. Because Windows Defender's AI model has not seen this specific file hash before, it flags it as a generic `Wacatac.C!ml` heuristic false positive.
+
+#### How to bypass Windows SmartScreen & Defender:
+
+1. **SmartScreen Banner**:
+   - On the blue prompt *"Windows protected your PC"*, click **More info**.
+   - Click the **Run anyway** button at the bottom.
+
+2. **If Windows Defender Blocks the Download**:
+   - Open **Windows Security** > **Virus & threat protection**.
+   - Click **Protection history**.
+   - Find the entry for Habbify, click **Actions**, and select **Allow on device** or **Restore**.
+   - *Optional*: You can submit the file directly to [Microsoft Security Intelligence Sample Submission](https://www.microsoft.com/wdsi/filesubmission) to accelerate false-positive clearing.
+
+---
+
+### 🍎 macOS Gatekeeper: "Unidentified Developer / Cannot Be Opened"
+
+Apple Gatekeeper blocks apps downloaded from outside the Mac App Store that are not signed with a paid Apple Developer Certificate.
+
+#### **Method 1: Right-Click Open (Fastest — 2 Seconds)**
+1. Open your Downloads folder and find `Habbify.app` or `Habbify-Installer.dmg`.
+2. **Right-click** (or hold `Control` and click) the Habbify icon.
+3. Click **Open** from the dropdown menu.
+4. In the pop-up modal, click **Open**. (macOS remembers this decision permanently).
 
 #### **Method 2: System Settings**
-1. Open **System Settings** on your Mac.
-2. Go to **Privacy & Security** in the sidebar.
-3. Scroll down to the **Security** section.
-4. You will see a note: *"Habbify was blocked from use because it is not from an identified developer"*.
-5. Click **Open Anyway** and enter your Mac password.
+1. Open **System Settings** > **Privacy & Security**.
+2. Scroll down to **Security**.
+3. Under *"Habbify was blocked from use because it is not from an identified developer"*, click **Open Anyway**.
 
 #### **Method 3: Terminal Command**
-Open Terminal and run:
+If you prefer command line:
 ```bash
 sudo xattr -rd com.apple.quarantine /Applications/Habbify.app
 ```
 
 ---
 
-### 🪟 Windows ("Windows Protected Your PC / Unknown Publisher")
+## 🛠️ Building & Running From Source
 
-If Windows Defender SmartScreen displays: *"Windows protected your PC - Microsoft Defender SmartScreen prevented an unrecognized app from starting"*
+If you want to inspect the source code or build the binaries yourself:
 
-1. Click **More info** (underlined text on the blue SmartScreen banner).
-2. A new button will appear at the bottom: **Run anyway**.
-3. Click **Run anyway** to launch Habbify.
+### Requirements
+- [Node.js](https://nodejs.org/) (v18.0 or later)
+- `npm` (v9.0 or later)
 
----
-
-## 💻 Building & Running from Source
-
-If you prefer to build Habbify yourself from source:
-
-### Prerequisites
-- [Node.js](https://nodejs.org/) (v18 or higher)
-- npm (v9 or higher)
-
-### Setup Instructions
+### Commands
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/Dreamer5967/habbify-releases.git
 cd habbify-releases
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Run in development mode (Vite + Electron)
-npm run electron:dev
+# 3. Launch in development mode
+npm run dev               # Vite web server
+npm run electron:dev      # Vite + Electron desktop application
 
-# Build local production bundle
-npm run build
-
-# Build macOS Universal installer (.dmg & .app)
-npm run electron:build
-
-# Build Windows installer (.exe)
-npm run electron:build:win
+# 4. Build local production installer
+npm run electron:build      # macOS Universal DMG & ZIP
+npm run electron:build:win  # Windows NSIS EXE & ZIP
 ```
+
+---
+
+## 🤝 Contributing & Feedback
+
+Contributions, feature suggestions, and bug reports are welcome! Feel free to open an issue or pull request on [GitHub](https://github.com/Dreamer5967/habbify-releases).
 
 ---
 
 ## 📜 License
 
-Distributed under the MIT License. See `LICENSE` for more details.
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
