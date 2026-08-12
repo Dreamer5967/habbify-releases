@@ -373,6 +373,35 @@ export default function SettingsScreen({ onBack }) {
                         </div>
                     </div>
 
+                    {/* Habbify Website Info Card */}
+                    <div className="bg-gradient-to-r from-blue-900/40 via-indigo-900/40 to-slate-900/40 border border-blue-500/30 rounded-2xl p-5 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <div className="p-3 bg-blue-500/20 border border-blue-500/30 rounded-xl text-blue-400">
+                                <Globe size={22} />
+                            </div>
+                            <div>
+                                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                                    Habbify Official Website
+                                </h3>
+                                <p className="text-slate-300 text-xs mt-0.5">
+                                    Check the official Habbify website for news, documentation, and releases.
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => {
+                                if (window.electron && window.electron.openExternal) {
+                                    window.electron.openExternal('https://github.com/Dreamer5967/habbify-releases');
+                                } else {
+                                    window.open('https://github.com/Dreamer5967/habbify-releases', '_blank');
+                                }
+                            }}
+                            className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 shrink-0 flex items-center gap-1.5"
+                        >
+                            Visit Website 🌐
+                        </button>
+                    </div>
+
                     {/* Theme Customization */}
                     <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 space-y-4 border border-slate-700/50">
                         <h2 className="text-lg font-semibold text-white flex items-center gap-2">
