@@ -53,7 +53,12 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       if (state.todos.length > 0) {
         localStorage.setItem(`todos_${state.todos[0].profileId}`, JSON.stringify(newTodos))
       }
-      useAuthStore.getState().deleteCloudDoc('todos', id)
+      try {
+        const authState = useAuthStore.getState();
+        if (authState && typeof authState.deleteCloudDoc === 'function') {
+          authState.deleteCloudDoc('todos', id);
+        }
+      } catch (e) {}
       return { todos: newTodos }
     })
   },
@@ -66,7 +71,12 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     
     // Delete from cloud
     completed.forEach(t => {
-      useAuthStore.getState().deleteCloudDoc('todos', t.id)
+      try {
+        const authState = useAuthStore.getState();
+        if (authState && typeof authState.deleteCloudDoc === 'function') {
+          authState.deleteCloudDoc('todos', t.id);
+        }
+      } catch (e) {}
     })
 
     if (state.todos.length > 0) {

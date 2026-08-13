@@ -70,6 +70,7 @@ interface AuthState {
   removeFriend: (friendId: string) => Promise<void>
   getIncomingRequestsProfiles: () => Promise<UserProfile[]>
   syncLocalDataToFirestore: (localData: any) => Promise<void>
+  deleteCloudDoc: (collectionName: string, docId: string) => Promise<void>
   loadUserData: () => Promise<any>
 }
 
@@ -82,6 +83,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   loading: true,
   feedLoading: false,
   error: null,
+
+  deleteCloudDoc: async (collectionName: string, docId: string) => {
+    try {
+      const state = get()
+      if (!state.userProfile?.uid) return
+      const docRef = doc(db, 'users', state.userProfile.uid, collectionName, docId)
+      await setDoc(docRef, { _deleted: true }, { merge: true })
+    } catch (e) {
+      console.warn(`deleteCloudDoc error for ${collectionName}/${docId}:`, e)
+    }
+  },
 
   signInWithGoogle: async () => {
     try {

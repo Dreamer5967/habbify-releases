@@ -62,7 +62,12 @@ export const useGoalStore = create<GoalState>((set, get) => ({
       if (state.goals.length > 0) {
         localStorage.setItem(`goals_${state.goals[0].profileId}`, JSON.stringify(newGoals))
       }
-      useAuthStore.getState().deleteCloudDoc('goals', id)
+      try {
+        const authState = useAuthStore.getState();
+        if (authState && typeof authState.deleteCloudDoc === 'function') {
+          authState.deleteCloudDoc('goals', id);
+        }
+      } catch (e) {}
       return { goals: newGoals}
     })
   },

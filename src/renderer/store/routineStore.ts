@@ -52,7 +52,12 @@ export const useRoutineStore = create<RoutineState>((set, get) => ({
       if (state.routines.length > 0) {
         localStorage.setItem(`routines_${state.routines[0].profileId}`, JSON.stringify(newRoutines))
       }
-      useAuthStore.getState().deleteCloudDoc('routines', id)
+      try {
+        const authState = useAuthStore.getState();
+        if (authState && typeof authState.deleteCloudDoc === 'function') {
+          authState.deleteCloudDoc('routines', id);
+        }
+      } catch (e) {}
       return { routines: newRoutines}
     })
   },

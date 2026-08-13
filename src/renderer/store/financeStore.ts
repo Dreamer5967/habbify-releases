@@ -52,7 +52,12 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
       if (state.entries.length > 0) {
         localStorage.setItem(`finance_${state.entries[0].profileId}`, JSON.stringify(newEntries))
       }
-      useAuthStore.getState().deleteCloudDoc('finance', id)
+      try {
+        const authState = useAuthStore.getState();
+        if (authState && typeof authState.deleteCloudDoc === 'function') {
+          authState.deleteCloudDoc('finance', id);
+        }
+      } catch (e) {}
       return { entries: newEntries}
     })
   },

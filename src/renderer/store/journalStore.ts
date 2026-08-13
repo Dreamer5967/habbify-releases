@@ -60,7 +60,12 @@ export const useJournalStore = create<JournalState>((set, get) => ({
       if (state.entries.length > 0) {
         localStorage.setItem(`journal_${state.entries[0].profileId}`, JSON.stringify(newEntries))
       }
-      useAuthStore.getState().deleteCloudDoc('journal', id)
+      try {
+        const authState = useAuthStore.getState();
+        if (authState && typeof authState.deleteCloudDoc === 'function') {
+          authState.deleteCloudDoc('journal', id);
+        }
+      } catch (e) {}
       return { entries: newEntries}
     })
   },

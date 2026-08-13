@@ -82,16 +82,37 @@ export const useHabitStore = create<HabitState>((set, get) => ({
 })
 },
 
- removeHabit: (id) => {
- set((state) => {
- const habitToRemove = state.habits.find((h) => h.id === id);
- if (!habitToRemove) return { habits: state.habits };
- const newHabits = state.habits.filter((h) => h.id !== id)
- localStorage.setItem(`habits_${habitToRemove.profileId}`, JSON.stringify(newHabits))
- useAuthStore.getState().deleteCloudDoc('habits', id)
- return { habits: newHabits}
-})
-},
+  removeHabit: (id) => {
+    set((state) => {
+      const habitToRemove = state.habits.find((h) => h.id === id);
+      if (!habitToRemove) return { habits: state.habits };
+      const newHabits = state.habits.filter((h) => h.id !== id);
+      
+      const profileIdsToSave = new Set<string>();
+      if (habitToRemove.profileId) profileIdsToSave.add(habitToRemove.profileId);
+      const currentProf = useProfileStore.getState().currentProfile;
+      if (currentProf?.id) profileIdsToSave.add(currentProf.id);
+      
+      if (profileIdsToSave.size === 0) {
+        localStorage.setItem('habits_default', JSON.stringify(newHabits));
+      } else {
+        profileIdsToSave.forEach(pId => {
+          localStorage.setItem(`habits_${pId}`, JSON.stringify(newHabits));
+        });
+      }
+
+      try {
+        const authState = useAuthStore.getState();
+        if (authState && typeof authState.deleteCloudDoc === 'function') {
+          authState.deleteCloudDoc('habits', id);
+        }
+      } catch (e) {
+        console.warn('Cloud doc deletion attempt failed:', e);
+      }
+
+      return { habits: newHabits };
+    });
+  },
 
  deleteHabit: (id) => {
     get().removeHabit(id);
