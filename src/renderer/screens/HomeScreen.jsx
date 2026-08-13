@@ -596,15 +596,15 @@ Keep it to 2 short sentences. Be warm, empowering, and profound. Avoid generic p
                                         </div>
                                         <div className="flex flex-col items-end gap-2 shrink-0">
                                             <button
-                                                onClick={() => {
-                                                    if (window.confirm(`Are you sure you want to archive "${habit.name}"? It will be removed from your daily list but its progress will be saved in Statistics.`)) {
-                                                        updateHabit(habit.id, { isArchived: true, isActive: false });
-                                                        toast.success(`"${habit.name}" archived. View it in Stats!`);
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (window.confirm(`Are you sure you want to delete "${habit.name}"? This action cannot be undone.`)) {
+                                                        removeHabit(habit.id);
+                                                        toast.success(`"${habit.name}" deleted.`);
                                                     }
                                                 }}
-                                                className="hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg"
-                                                style={{ color: 'var(--color-text)', backgroundColor: 'color-mix(in srgb, var(--color-background) 80%, var(--color-surface))' }}
-                                                title="Archive Habit"
+                                                className="text-red-400 hover:text-red-300 hover:bg-red-500/20 p-2 rounded-xl border border-red-500/30 transition-all duration-200 hover:scale-105 active:scale-95"
+                                                title="Delete Habit"
                                             >
                                                 <Trash2 size={16} />
                                             </button>

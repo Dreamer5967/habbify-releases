@@ -34,6 +34,7 @@ interface HabitState {
  setHabits: (habits: Habit[]) => void
  addHabit: (habit: Habit) => void
  removeHabit: (id: string) => void
+ deleteHabit: (id: string) => void
  updateHabit: (id: string, habit: Partial<Habit>) => void
  completeHabit: (id: string) => void
  canCompleteHabit: (id: string) => boolean
@@ -91,6 +92,10 @@ export const useHabitStore = create<HabitState>((set, get) => ({
  return { habits: newHabits}
 })
 },
+
+ deleteHabit: (id) => {
+    get().removeHabit(id);
+  },
 
  updateHabit: (id, updates) => {
  set((state) => {
