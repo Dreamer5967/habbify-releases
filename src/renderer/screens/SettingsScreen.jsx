@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { getTrueDate, getTrueTodayString } from '../utils/timeUtils';
 import { 
     ChevronLeft, Bell, Moon, Volume2, Lock, User, LogOut, Download, Palette, 
-    Cloud, Globe, Calendar, RotateCcw, Trash2, HelpCircle, Sparkles, Key, DollarSign, RefreshCw 
+    Cloud, Globe, Calendar, RotateCcw, Trash2, HelpCircle, Sparkles, Key, DollarSign, RefreshCw,
+    Eye, EyeOff, Clipboard
 } from 'lucide-react';
 import FeatureGuideModal from '../components/FeatureGuideModal';
 import { useProfileStore } from '../store/profileStore';
@@ -90,6 +91,21 @@ export default function SettingsScreen({ onBack }) {
     const [checkingUsername, setCheckingUsername] = useState(false);
     const [purgeConfirm, setPurgeConfirm] = useState('');
     const [apiKeyInput, setApiKeyInput] = useState(settings?.groqApiKey || '');
+    const [showApiKey, setShowApiKey] = useState(false);
+
+    const handlePasteApiKey = async () => {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+                setApiKeyInput(text.trim());
+                toast.success('Pasted API key from clipboard!');
+            } else {
+                toast.error('Clipboard is empty.');
+            }
+        } catch (err) {
+            toast.error('Could not read clipboard. Please use Cmd+V / Ctrl+V.');
+        }
+    };
 
     // Debounced username availability check
     useEffect(() => {
@@ -577,17 +593,40 @@ export default function SettingsScreen({ onBack }) {
                                     {settings?.groqApiKey ? 'Configured' : `${settings?.freeAiCallsRemaining || 0} Free Calls Left`}
                                 </span>
                             </div>
-                            <div className="flex gap-2">
-                                <input
-                                    type="password"
-                                    placeholder="gsk_..."
-                                    value={apiKeyInput}
-                                    onChange={(e) => setApiKeyInput(e.target.value)}
-                                    className="flex-1 bg-slate-700 text-white rounded-xl px-3 py-2 text-sm border border-slate-600 focus:outline-none"
-                                />
+                            <div className="flex gap-2 items-center flex-wrap sm:flex-nowrap">
+                                <div className="relative flex-1 min-w-[200px]">
+                                    <input
+                                        type={showApiKey ? "text" : "password"}
+                                        placeholder="gsk_..."
+                                        value={apiKeyInput}
+                                        onChange={(e) => setApiKeyInput(e.target.value)}
+                                        onPaste={(e) => {
+                                            const pasted = e.clipboardData.getData('text');
+                                            if (pasted) setApiKeyInput(pasted.trim());
+                                        }}
+                                        className="w-full bg-slate-700 text-white rounded-xl pl-3 pr-10 py-2 text-sm border border-slate-600 focus:outline-none focus:border-blue-500 transition"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowApiKey(!showApiKey)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition"
+                                        title={showApiKey ? "Hide Key" : "Show Key"}
+                                    >
+                                        {showApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </button>
+                                </div>
                                 <button
+                                    type="button"
+                                    onClick={handlePasteApiKey}
+                                    className="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-1.5 border border-slate-600 hover:text-white"
+                                    title="Paste API Key from Clipboard"
+                                >
+                                    <Clipboard size={15} /> Paste
+                                </button>
+                                <button
+                                    type="button"
                                     onClick={handleSaveApiKey}
-                                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
+                                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition shadow-md"
                                 >
                                     Save Key
                                 </button>

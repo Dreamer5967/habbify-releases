@@ -1,5 +1,4 @@
 import { app, BrowserWindow, ipcMain, shell, Tray, Menu, nativeImage, session, dialog } from 'electron'
-Menu.setApplicationMenu(null)
 import http from 'http'
 import fs from 'fs'
 import { exec, spawn, execSync } from 'child_process'
@@ -7,6 +6,43 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import extract from 'extract-zip'
 import https from 'https'
+
+// Create application menu with native Edit roles (Copy, Paste, Cut, Select All, Undo, Redo)
+const template = [
+  ...(process.platform === 'darwin' ? [{
+    label: app.name,
+    submenu: [
+      { role: 'about' },
+      { type: 'separator' },
+      { role: 'services' },
+      { type: 'separator' },
+      { role: 'hide' },
+      { role: 'hideOthers' },
+      { role: 'unhide' },
+      { type: 'separator' },
+      { role: 'quit' }
+    ]
+  }] : []),
+  {
+    label: 'Edit',
+    submenu: [
+      { role: 'undo' },
+      { role: 'redo' },
+      { type: 'separator' },
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
+      { role: 'pasteAndMatchStyle' },
+      { role: 'delete' },
+      { role: 'selectAll' }
+    ]
+  }
+]
+
+app.whenReady().then(() => {
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
+})
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
