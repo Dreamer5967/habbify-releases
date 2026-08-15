@@ -189,18 +189,17 @@ export const useGymStore = create<GymState>((set, get) => ({
 
   setFullPlan: (daysInput, dietGuide) => set(state => {
   if (!state.plan) return state
-  
-  const newDays: GymDay[] = daysInput.map(d => ({
-  id: uuidv4(),
-  dayName: d.dayName,
-  description: d.description || '',
-  exercises: d.exercises.map(e => ({
-  id: uuidv4(),
-  name: e.name || '',
-  sets: e.sets || '',
-  reps: e.reps || '',
-  weight: e.weight || '',
-  completed: false
+    const newDays: GymDay[] = daysInput.map(d => ({
+   id: uuidv4(),
+   dayName: d.dayName,
+   description: d.description || '',
+   exercises: (d.exercises || []).map(e => ({
+   id: uuidv4(),
+   name: e.name || '',
+   sets: String(e.sets || ''),
+   reps: String(e.reps || ''),
+   weight: String(e.weight || ''),
+   completed: false
 }))
 }))
 

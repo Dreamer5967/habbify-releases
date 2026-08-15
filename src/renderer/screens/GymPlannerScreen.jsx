@@ -314,15 +314,22 @@ export default function GymPlannerScreen({ onBack, onNavigateSettings }) {
 
     const systemPrompt = {
       role: 'system',
-      content: `You are an expert fitness coach AI in a gym planner app. IMPORTANT: If the user asks to create/generate/update their gym plan, output a JSON block wrapped in \`\`\`json ... \`\`\` with this format:
+      content: `You are an expert fitness coach AI in a gym planner app. IMPORTANT RULES:
+1. When the user asks to create, generate, update, add, put, or finalize their gym plan (e.g. "put it in my planner", "add it to my days", "update my plan", "yes finalize it"), you MUST output ONLY a JSON block wrapped in \`\`\`json ... \`\`\` with this exact format:
 {"dietGuide":{"title":"...","proteinText":"...","recoveryText":"..."},"days":[{"dayName":"Day 1 - Push","description":"Focus...","exercises":[{"name":"Bench Press","sets":"4","reps":"8","weight":"60kg"}]}]}
-ONLY output JSON when explicitly asked to generate/update the plan. Otherwise converse normally.`
+2. Rest days MUST still include an empty "exercises" array: {"dayName":"Day 3 - Rest","description":"Rest day...","exercises":[]}
+3. All "sets", "reps", and "weight" values MUST be strings.
+4. When outputting JSON, do NOT add any text before or after the JSON block.
+5. Otherwise, converse normally as a fitness coach.`
     };
+
+    // Sliding window: only send the last 8 messages to avoid token overflow on small models
+    const recentMessages = updatedMessages.slice(-8);
 
     try {
       const apiKey = userKey || GLOBAL_GROQ_KEY;
       if (!apiKey) throw new Error('No API Key configured. Please add it in Settings.');
-      const response = await callGroqAPI([systemPrompt, ...updatedMessages], apiKey);
+      const response = await callGroqAPI([systemPrompt, ...recentMessages], apiKey);
       const assistantMessage = response.choices[0].message.content;
       setMessages([...updatedMessages, { role: 'assistant', content: assistantMessage }]);
       if (!userKey) updateSettings({ freeAiCallsRemaining: Math.max(0, freeCalls - 1) });
