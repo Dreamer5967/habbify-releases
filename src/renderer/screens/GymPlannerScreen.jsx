@@ -229,7 +229,7 @@ export default function GymPlannerScreen({ onBack, onNavigateSettings }) {
 
   const [messages, setMessages] = useState([{
     role: 'assistant',
-    content: "Hi! I'm your AI Fitness Coach. I can help you build a personalized weekly gym split & custom diet plan. Tell me your goals (e.g. 'Create a 4-day Push Pull Legs split')."
+    content: "Hi! I'm your AI Fitness Coach. 🏋️‍♂️\n\n1. Chat with me to design or tweak your workout routine.\n2. When you're happy with the plan, say: **\"Put this plan into my gym planner\"** (or click the quick button below).\n3. I'll automatically organize it across all your days with exercises and nutrition guidance!"
   }]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -300,13 +300,14 @@ export default function GymPlannerScreen({ onBack, onNavigateSettings }) {
     return response.json();
   };
 
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return;
+  const handleSendMessage = async (overrideText) => {
+    const textToSend = typeof overrideText === 'string' ? overrideText : inputMessage;
+    if (!textToSend.trim()) return;
     const userKey = settings?.groqApiKey;
     const freeCalls = settings?.freeAiCallsRemaining || 0;
     if (!userKey && freeCalls <= 0) { toast.error('Free AI calls exhausted. Configure your Groq API key in Settings.'); return; }
 
-    const newUserMsg = { role: 'user', content: inputMessage };
+    const newUserMsg = { role: 'user', content: textToSend };
     const updatedMessages = [...messages, newUserMsg];
     setMessages(updatedMessages);
     setInputMessage('');
@@ -661,27 +662,71 @@ export default function GymPlannerScreen({ onBack, onNavigateSettings }) {
           {/* AI Coach Tab */}
           {sidebarTab === 'ai' && (
             <>
-              <div className="px-4 py-2 border-b border-slate-700/50 flex justify-between items-center shrink-0">
-                {!settings?.groqApiKey && (
-                  <div
-                    className={`text-xs px-2 py-1 rounded-full cursor-pointer hover:bg-slate-700 transition flex items-center gap-1 ${(settings?.freeAiCallsRemaining || 0) === 0 ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}
-                    onClick={onNavigateSettings} title="Free calls remaining"
-                  >
-                    {settings?.freeAiCallsRemaining || 0} calls left <SettingsIcon size={11} />
+              {/* Instructions & Status Banner */}
+              <div className="px-3.5 py-2.5 bg-gradient-to-r from-purple-950/40 via-slate-900 to-blue-950/40 border-b border-purple-500/20 text-xs space-y-1.5 shrink-0">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-purple-300 font-semibold">
+                    <Sparkles size={13} className="text-purple-400" />
+                    <span>How to Apply AI Plan</span>
                   </div>
-                )}
+                  {!settings?.groqApiKey && (
+                    <div
+                      className={`text-[10px] px-2 py-0.5 rounded-full cursor-pointer hover:bg-slate-700 transition flex items-center gap-1 ${(settings?.freeAiCallsRemaining || 0) === 0 ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400 font-medium'}`}
+                      onClick={onNavigateSettings} title="Free calls remaining"
+                    >
+                      {settings?.freeAiCallsRemaining || 0} calls left <SettingsIcon size={10} />
+                    </div>
+                  )}
+                </div>
+                <p className="text-slate-300 text-[11px] leading-snug">
+                  1. Discuss your routine with the coach.<br />
+                  2. Tell the coach <span className="text-purple-300 font-bold">"Put this plan into my gym planner"</span> or use the quick buttons below.<br />
+                  3. The app will automatically populate all days & exercises!
+                </p>
               </div>
+
+              {/* Chat Message Stream */}
               <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
-                {messages.map((msg, idx) => (
-                  <div key={idx} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-blue-600' : 'bg-purple-600'}`}>
-                      {msg.role === 'user' ? <User size={14} className="text-white" /> : <Bot size={14} className="text-white" />}
+                {messages.map((msg, idx) => {
+                  const hasPlanJson = msg.role === 'assistant' && (msg.content.includes('```json') || (msg.content.includes('"days"') && msg.content.includes('"dayName"')));
+                  return (
+                    <div key={idx} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-blue-600' : 'bg-purple-600'}`}>
+                        {msg.role === 'user' ? <User size={14} className="text-white" /> : <Bot size={14} className="text-white" />}
+                      </div>
+                      <div className={`p-2.5 rounded-2xl max-w-[85%] text-xs leading-relaxed ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-slate-700 text-slate-200 rounded-tl-none'}`}>
+                        <div className="whitespace-pre-wrap">{msg.content}</div>
+                        {hasPlanJson && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              try {
+                                const jm = msg.content.match(/```json\s*([\s\S]*?)\s*```/);
+                                let str = jm?.[1] || '';
+                                if (!str) {
+                                  const fb = msg.content.indexOf('{');
+                                  const lb = msg.content.lastIndexOf('}');
+                                  if (fb !== -1 && lb > fb) str = msg.content.slice(fb, lb + 1);
+                                }
+                                const parsed = JSON.parse(str);
+                                const days = Array.isArray(parsed) ? parsed : parsed.days;
+                                if (Array.isArray(days) && days.length > 0) {
+                                  setFullPlan(days, parsed.dietGuide);
+                                  toast.success('Gym plan applied to planner!');
+                                }
+                              } catch (e) {
+                                toast.error('Could not apply plan from message.');
+                              }
+                            }}
+                            className="mt-2.5 flex items-center justify-center gap-1.5 w-full py-1.5 px-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-semibold text-xs shadow-md transition"
+                          >
+                            <Check size={14} /> Apply this Plan to Gym Planner
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <div className={`p-2.5 rounded-2xl max-w-[85%] text-xs leading-relaxed ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-slate-700 text-slate-200 rounded-tl-none'}`}>
-                      {msg.content}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
                 {isTyping && (
                   <div className="flex gap-2">
                     <div className="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center shrink-0"><Bot size={14} className="text-white" /></div>
@@ -692,17 +737,44 @@ export default function GymPlannerScreen({ onBack, onNavigateSettings }) {
                 )}
                 <div ref={chatEndRef} />
               </div>
+
+              {/* Quick Action Prompt Chips */}
+              <div className="px-3 pt-2 pb-1 border-t border-slate-700/50 flex gap-1.5 overflow-x-auto custom-scrollbar shrink-0 bg-slate-900/40">
+                <button
+                  type="button"
+                  onClick={() => handleSendMessage("Put this plan into my gym planner for all the days")}
+                  className="whitespace-nowrap bg-purple-600/30 hover:bg-purple-600 text-purple-200 hover:text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-purple-500/40 transition flex items-center gap-1 shrink-0"
+                >
+                  <Sparkles size={11} /> Apply Plan to Days
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSendMessage("Create a 4-day Push Pull Legs split for muscle building")}
+                  className="whitespace-nowrap bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] px-2.5 py-1 rounded-lg border border-slate-700 transition shrink-0"
+                >
+                  4-Day PPL Split
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSendMessage("Create a 5-day Cardio & Core lean out plan")}
+                  className="whitespace-nowrap bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] px-2.5 py-1 rounded-lg border border-slate-700 transition shrink-0"
+                >
+                  Cardio & Core
+                </button>
+              </div>
+
+              {/* Chat Input */}
               <div className="p-3 border-t border-slate-700/50 shrink-0">
                 <div className="flex items-end gap-2">
                   <textarea
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
-                    placeholder="Ask about a workout..."
+                    placeholder="Ask coach or type 'Put this plan in my gym planner'..."
                     className="flex-1 bg-slate-900 border border-slate-700/50 rounded-xl px-3 py-2 text-white text-xs focus:border-purple-500 focus:outline-none resize-none"
                     rows={2}
                   />
-                  <button onClick={handleSendMessage} disabled={isTyping || !inputMessage.trim()}
+                  <button onClick={() => handleSendMessage()} disabled={isTyping || !inputMessage.trim()}
                     className="p-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl transition disabled:opacity-50 shrink-0">
                     <Send size={16} />
                   </button>
