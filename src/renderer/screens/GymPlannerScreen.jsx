@@ -294,7 +294,7 @@ export default function GymPlannerScreen({ onBack, onNavigateSettings }) {
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: 'llama-3.1-8b-instant', messages, temperature: 0.7 })
+      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages, temperature: 0.7 })
     });
     if (!response.ok) { const error = await response.json(); throw new Error(error.error?.message || 'API request failed'); }
     return response.json();

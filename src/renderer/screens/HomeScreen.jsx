@@ -135,7 +135,7 @@ export default function HomeScreen({ onNavigate }) {
                     'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    model: 'llama-3.1-8b-instant',
+                    model: 'llama-3.3-70b-versatile',
                     messages: [
                         { role: 'system', content: `You are Sparky, an energetic, funny, hyper-supportive best friend & hype companion in Habbify.` },
                         { role: 'user', content: contextMsg + ` Address ${userName} and keep it to 1-2 short hyped sentences!` }
@@ -177,7 +177,7 @@ export default function HomeScreen({ onNavigate }) {
                     'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    model: 'llama-3.1-8b-instant',
+                    model: 'llama-3.3-70b-versatile',
                     messages: [
                         { role: 'system', content: 'You are a master philosopher and motivational mentor. Output strictly JSON with format {"text": "Quote here...", "author": "Author Name"}. Keep the quote short, profound, and deeply inspiring.' },
                         { role: 'user', content: 'Give me a powerful, unique motivational thought of the day for someone working on personal transformation.' }
@@ -230,7 +230,7 @@ export default function HomeScreen({ onNavigate }) {
                     'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    model: 'llama-3.1-8b-instant',
+                    model: 'llama-3.3-70b-versatile',
                     messages: [
                         {
                             role: 'system',
