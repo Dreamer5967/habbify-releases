@@ -4,6 +4,7 @@ import { useProfileStore } from '../store/profileStore';
 import { useGymStore } from '../store/gymStore';
 import { useSettingsStore } from '../store/settingsStore';
 import { toast } from 'sonner';
+import { callGroqChat } from '../services/aiService';
 import muscleMapImg from '../assets/muscle_map.png';
 
 const GLOBAL_GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY || '';
@@ -291,13 +292,12 @@ export default function GymPlannerScreen({ onBack, onNavigateSettings }) {
   };
 
   const callGroqAPI = async (messages, apiKey) => {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages, temperature: 0.7 })
+    return callGroqChat({
+      apiKey,
+      preferredModel: settings?.groqModel,
+      messages,
+      temperature: 0.7,
     });
-    if (!response.ok) { const error = await response.json(); throw new Error(error.error?.message || 'API request failed'); }
-    return response.json();
   };
 
   const handleSendMessage = async (overrideText) => {

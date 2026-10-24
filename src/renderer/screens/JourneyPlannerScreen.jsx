@@ -8,6 +8,7 @@ import { useProfileStore } from '../store/profileStore';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
 import { useSettingsStore } from '../store/settingsStore';
+import { callGroqChat } from '../services/aiService';
 const GLOBAL_GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY || '';
 export default function JourneyPlannerScreen({ onBack, onComplete, initialPrompt }) {
     const { currentProfile } = useProfileStore();
@@ -43,26 +44,16 @@ You MUST respond strictly in the following JSON format without any markdown bloc
 }
  ]
 }`;
-            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: 'llama-3.3-70b-versatile',
-                    response_format: { type: 'json_object' },
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        { role: 'user', content: `My goal is: ${goal}` }
-                    ],
-                    temperature: 0.7,
-                })
+            const data = await callGroqChat({
+                apiKey,
+                preferredModel: settings?.groqModel,
+                response_format: { type: 'json_object' },
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: `My goal is: ${goal}` }
+                ],
+                temperature: 0.7,
             });
-            if (!response.ok) {
-                throw new Error('Failed to generate plan from AI');
-            }
-            const data = await response.json();
             const assistantMessage = data.choices[0].message.content;
             // Parse JSON, handling potential markdown wrappers
             let jsonStr = assistantMessage;

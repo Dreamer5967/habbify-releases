@@ -7,6 +7,7 @@ import { useSettingsStore } from '../store/settingsStore';
 import { useProfileStore } from '../store/profileStore';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
+import { callGroqChat } from '../services/aiService';
 export default function ChallengesScreen({ onBack }) {
     const { currentProfile } = useProfileStore();
     const { challenges, loadChallenges, createChallenge, getActiveChallenges, getCompletedChallenges, progressChallenge } = useChallengeStore();
@@ -79,25 +80,16 @@ You MUST respond strictly in the following JSON format. Do not use markdown.
 "targetValue": 14,
 "reward": 50
 }`;
-            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: 'llama-3.3-70b-versatile',
-                    response_format: { type: 'json_object' },
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        { role: 'user', content: `Generate a challenge for: ${aiPrompt}` }
-                    ],
-                    temperature: 0.7,
-                })
+            const data = await callGroqChat({
+                apiKey,
+                preferredModel: settings?.groqModel,
+                response_format: { type: 'json_object' },
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: `Generate a challenge for: ${aiPrompt}` }
+                ],
+                temperature: 0.7,
             });
-            if (!response.ok)
-                throw new Error('Failed to generate from AI');
-            const data = await response.json();
             let jsonStr = data.choices[0].message.content;
             const firstBrace = jsonStr.indexOf('{');
             const lastBrace = jsonStr.lastIndexOf('}');

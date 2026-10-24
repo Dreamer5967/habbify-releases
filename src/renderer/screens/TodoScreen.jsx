@@ -7,6 +7,7 @@ import { useHabitStore } from '../store/habitStore';
 import { useSettingsStore } from '../store/settingsStore';
 import { getTrueDate, getTrueTodayString } from '../utils/timeUtils';
 import { toast } from 'sonner';
+import { callGroqChat } from '../services/aiService';
 export default function TodoScreen({ onBack }) {
     const { todos, addTodo, toggleTodo, removeTodo, clearCompleted, loadTodos } = useTodoStore();
     const { currentProfile } = useProfileStore();
@@ -75,32 +76,23 @@ Today's To-Do Progress: ${completed}/${total} tasks finished!
 Habits Progress: ${completedHabits}/${activeHabits} habits completed today.
 
 Give ${userName} an awesome, hilarious, high-energy pep talk for crushing "${taskName}"!`;
-            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: 'llama-3.3-70b-versatile',
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        { role: 'user', content: userPrompt }
-                    ],
-                    temperature: 0.9,
-                    max_tokens: 90,
-                })
+            const data = await callGroqChat({
+                apiKey,
+                preferredModel: settings?.groqModel,
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: userPrompt }
+                ],
+                temperature: 0.9,
+                max_tokens: 90,
             });
-            if (response.ok) {
-                const data = await response.json();
-                const message = (_d = (_c = (_b = (_a = data.choices) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.message) === null || _c === void 0 ? void 0 : _c.content) === null || _d === void 0 ? void 0 : _d.trim();
-                if (message) {
-                    setAiMessage(message);
-                    // Keep visible for 8 seconds
-                    setTimeout(() => {
-                        setShowAiBubble(false);
-                    }, 8000);
-                }
+            const message = (_d = (_c = (_b = (_a = data.choices) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.message) === null || _c === void 0 ? void 0 : _c.content) === null || _d === void 0 ? void 0 : _d.trim();
+            if (message) {
+                setAiMessage(message);
+                // Keep visible for 8 seconds
+                setTimeout(() => {
+                    setShowAiBubble(false);
+                }, 8000);
             }
         }
         catch (e) {

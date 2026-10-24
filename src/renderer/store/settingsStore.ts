@@ -32,6 +32,7 @@ export interface Settings {
  nativeTimezone?: string // Added for Satellite Sync Feature
  currencySymbol?: string // For Finance Tracker
  groqApiKey?: string
+ groqModel?: string
  freeAiCallsRemaining: number
  createdAt: string
  updatedAt: string
@@ -81,6 +82,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
       highContrast: false,
       reducedMotion: false,
       currencySymbol: '$',
+      groqModel: 'openai/gpt-oss-120b',
       freeAiCallsRemaining: 70,
     } as Settings
 
@@ -168,6 +170,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         highContrast: false,
         reducedMotion: false,
         currencySymbol: '$',
+        groqModel: 'openai/gpt-oss-120b',
         freeAiCallsRemaining: 70,
         createdAt: getTrueDate().toISOString(),
         updatedAt: getTrueDate().toISOString()

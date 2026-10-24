@@ -12,6 +12,7 @@ import { useAuthStore } from '../store/authStore';
 import AddHabitModal from '../components/AddHabitModal';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
+import { callGroqChat } from '../services/aiService';
 import logoLightUrl from '../assets/logo-light.png';
 import logoDarkUrl from '../assets/logo-dark.png';
 
@@ -128,28 +129,19 @@ export default function HomeScreen({ onNavigate }) {
             return;
         }
         try {
-            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: 'llama-3.3-70b-versatile',
-                    messages: [
-                        { role: 'system', content: `You are Sparky, an energetic, funny, hyper-supportive best friend & hype companion in Habbify.` },
-                        { role: 'user', content: contextMsg + ` Address ${userName} and keep it to 1-2 short hyped sentences!` }
-                    ],
-                    temperature: 0.9,
-                    max_tokens: 60,
-                })
+            const data = await callGroqChat({
+                apiKey,
+                preferredModel: settings?.groqModel,
+                messages: [
+                    { role: 'system', content: `You are Sparky, an energetic, funny, hyper-supportive best friend & hype companion in Habbify.` },
+                    { role: 'user', content: contextMsg + ` Address ${userName} and keep it to 1-2 short hyped sentences!` }
+                ],
+                temperature: 0.9,
+                max_tokens: 60,
             });
-            if (response.ok) {
-                const data = await response.json();
-                const msg = data.choices?.[0]?.message?.content?.trim();
-                if (msg)
-                    setSparkyMessage(msg);
-            }
+            const msg = data.choices?.[0]?.message?.content?.trim();
+            if (msg)
+                setSparkyMessage(msg);
         }
         catch (e) {
             console.error('Sparky context talk failed:', e);
@@ -170,28 +162,19 @@ export default function HomeScreen({ onNavigate }) {
         }
         setIsAiThoughtLoading(true);
         try {
-            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: 'llama-3.3-70b-versatile',
-                    messages: [
-                        { role: 'system', content: 'You are a master philosopher and motivational mentor. Output strictly JSON with format {"text": "Quote here...", "author": "Author Name"}. Keep the quote short, profound, and deeply inspiring.' },
-                        { role: 'user', content: 'Give me a powerful, unique motivational thought of the day for someone working on personal transformation.' }
-                    ],
-                    response_format: { type: 'json_object' },
-                    temperature: 0.9,
-                })
+            const data = await callGroqChat({
+                apiKey,
+                preferredModel: settings?.groqModel,
+                messages: [
+                    { role: 'system', content: 'You are a master philosopher and motivational mentor. Output strictly JSON with format {"text": "Quote here...", "author": "Author Name"}. Keep the quote short, profound, and deeply inspiring.' },
+                    { role: 'user', content: 'Give me a powerful, unique motivational thought of the day for someone working on personal transformation.' }
+                ],
+                response_format: { type: 'json_object' },
+                temperature: 0.9,
             });
-            if (response.ok) {
-                const data = await response.json();
-                const parsed = JSON.parse(data.choices?.[0]?.message?.content || '{}');
-                if (parsed.text && parsed.author) {
-                    setThought(parsed);
-                }
+            const parsed = JSON.parse(data.choices?.[0]?.message?.content || '{}');
+            if (parsed.text && parsed.author) {
+                setThought(parsed);
             }
         }
         catch (e) {
@@ -223,37 +206,28 @@ export default function HomeScreen({ onNavigate }) {
         }
         setIsAppreciationLoading(true);
         try {
-            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: 'llama-3.3-70b-versatile',
-                    messages: [
-                        {
-                            role: 'system',
-                            content: `You are Sparky, a wise, inspiring, hyper-supportive best friend & mentor for ${userName} in Habbify. 
+            const data = await callGroqChat({
+                apiKey,
+                preferredModel: settings?.groqModel,
+                messages: [
+                    {
+                        role: 'system',
+                        content: `You are Sparky, a wise, inspiring, hyper-supportive best friend & mentor for ${userName} in Habbify. 
 When ${userName} completes a habit, give a deep, heartfelt appreciation message. Explain specifically how completing "${habitName}" is helping them make a real, lasting change in their life and identity.
 Keep it to 2 short sentences. Be warm, empowering, and profound. Avoid generic phrases.`
-                        },
-                        {
-                            role: 'user',
-                            content: `${userName} just completed habit: "${habitName}". (${completedTodayCount}/${activeHabits.length} habits done today). Appreciate their growth!`
-                        }
-                    ],
-                    temperature: 0.85,
-                    max_tokens: 80,
-                })
+                    },
+                    {
+                        role: 'user',
+                        content: `${userName} just completed habit: "${habitName}". (${completedTodayCount}/${activeHabits.length} habits done today). Appreciate their growth!`
+                    }
+                ],
+                temperature: 0.85,
+                max_tokens: 80,
             });
-            if (response.ok) {
-                const data = await response.json();
-                const msg = data.choices?.[0]?.message?.content?.trim();
-                if (msg) {
-                    setHabitAppreciation(msg);
-                    setSparkyMessage(msg);
-                }
+            const msg = data.choices?.[0]?.message?.content?.trim();
+            if (msg) {
+                setHabitAppreciation(msg);
+                setSparkyMessage(msg);
             }
         }
         catch (e) {
