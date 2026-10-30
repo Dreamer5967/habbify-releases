@@ -5,13 +5,26 @@
  */
 
 export const GROQ_SUPPORTED_MODELS = [
-  { id: 'openai/gpt-oss-120b', label: 'OpenAI GPT-OSS 120B (Flagship & High Reasoning)' },
-  { id: 'openai/gpt-oss-20b', label: 'OpenAI GPT-OSS 20B (Ultra Fast & Low Latency)' },
+  { id: 'llama-3.3-70b-versatile', label: 'Meta Llama 3.3 70B (Recommended & Fast)' },
+  { id: 'llama3-70b-8192', label: 'Meta Llama 3 70B (High Stability)' },
+  { id: 'llama3-8b-8192', label: 'Meta Llama 3 8B (Ultra Low Latency)' },
+  { id: 'openai/gpt-oss-120b', label: 'OpenAI GPT-OSS 120B (High Reasoning)' },
+  { id: 'openai/gpt-oss-20b', label: 'OpenAI GPT-OSS 20B (Fast Reasoning)' },
   { id: 'qwen/qwen3.8-27b', label: 'Qwen 3.8 27B' },
+  { id: 'llama-3.1-8b-instant', label: 'Meta Llama 3.1 8B Instant' },
 ]
 
-export const DEFAULT_GROQ_MODEL = 'openai/gpt-oss-120b'
-const FALLBACK_MODELS = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'qwen/qwen3.8-27b']
+export const DEFAULT_GROQ_MODEL = 'llama-3.3-70b-versatile'
+
+const FALLBACK_MODELS = [
+  'llama-3.3-70b-versatile',
+  'llama3-70b-8192',
+  'llama3-8b-8192',
+  'openai/gpt-oss-120b',
+  'openai/gpt-oss-20b',
+  'qwen/qwen3.8-27b',
+  'llama-3.1-8b-instant',
+]
 
 const WORKING_MODEL_STORAGE_KEY = 'habbify_working_groq_model'
 
@@ -39,7 +52,7 @@ export interface CallGroqChatOptions {
 
 /**
  * Calls Groq chat completions API with automatic candidate fallback
- * in case a model is decommissioned or unavailable for the user's key.
+ * in case a model is decommissioned, rate-limited, or unavailable for the user's key.
  */
 export async function callGroqChat({
   messages,
@@ -58,7 +71,7 @@ export async function callGroqChat({
     ? localStorage.getItem(WORKING_MODEL_STORAGE_KEY)
     : null
 
-  // Build list of candidate models to try in order
+  // Build ordered list of candidate models to try
   const candidates: string[] = []
   if (preferredModel && preferredModel.trim()) {
     candidates.push(preferredModel.trim())
@@ -91,9 +104,9 @@ export async function callGroqChat({
         body.response_format = response_format
       }
 
-      // For OpenAI GPT-OSS reasoning models, explicitly set reasoning_format to 'parsed'
-      // so thinking tags don't break JSON mode or pollute output
-      if (modelToTry.startsWith('openai/gpt-oss')) {
+      // Only set reasoning_format for OpenAI GPT-OSS when not using json_object mode,
+      // because Groq returns HTTP 400 if both reasoning_format and json_object response_format are set together
+      if (modelToTry.startsWith('openai/gpt-oss') && (!response_format || response_format.type !== 'json_object')) {
         body.reasoning_format = 'parsed'
       }
 
@@ -109,14 +122,36 @@ export async function callGroqChat({
       if (!response.ok) {
         const errorJson = await response.json().catch(() => null)
         const errMsg = errorJson?.error?.message || `HTTP ${response.status} ${response.statusText}`
-        const isModelAvailabilityError =
+        const errType = errorJson?.error?.type || ''
+        const errCode = errorJson?.error?.code || ''
+
+        // If the API key itself is explicitly invalid, stop early
+        const isInvalidKey =
+          response.status === 401 &&
+          (errMsg.toLowerCase().includes('invalid api key') ||
+           errCode === 'invalid_api_key' ||
+           errType === 'invalid_request_error')
+
+        if (isInvalidKey) {
+          throw new Error('Invalid Groq API key. Please check your key in Settings.')
+        }
+
+        // Retryable error: model decommissioned, not found, unsupported parameter, 400/404/422/500
+        const isRetryable =
+          response.status === 400 ||
+          response.status === 403 ||
           response.status === 404 ||
+          response.status === 422 ||
+          response.status >= 500 ||
           errMsg.toLowerCase().includes('does not exist') ||
           errMsg.toLowerCase().includes('do not have access') ||
           errMsg.toLowerCase().includes('decommissioned') ||
-          errMsg.toLowerCase().includes('model_not_found')
+          errMsg.toLowerCase().includes('model_not_found') ||
+          errMsg.toLowerCase().includes('not supported') ||
+          errMsg.toLowerCase().includes('unsupported') ||
+          errMsg.toLowerCase().includes('reasoning_format')
 
-        if (isModelAvailabilityError && i < candidates.length - 1) {
+        if (isRetryable && i < candidates.length - 1) {
           console.warn(`[Groq AI] Model "${modelToTry}" failed (${errMsg}). Trying next candidate: "${candidates[i + 1]}"...`)
           lastError = new Error(errMsg)
           continue
@@ -127,12 +162,12 @@ export async function callGroqChat({
 
       const data = await response.json()
 
-      // Remember working model
+      // Remember verified working model
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem(WORKING_MODEL_STORAGE_KEY, modelToTry)
       }
 
-      // Clean think tags from assistant message
+      // Clean think tags from assistant message if reasoning leaked through
       if (data?.choices?.[0]?.message?.content) {
         data.choices[0].message.content = stripThinkingTags(data.choices[0].message.content)
       }
@@ -140,14 +175,26 @@ export async function callGroqChat({
       return data
     } catch (err: any) {
       lastError = err
+
+      // Check if this error is an invalid key
+      if (err?.message?.toLowerCase().includes('invalid groq api key')) {
+        throw err
+      }
+
       const isRetryable =
         err?.message?.toLowerCase().includes('does not exist') ||
         err?.message?.toLowerCase().includes('do not have access') ||
         err?.message?.toLowerCase().includes('decommissioned') ||
-        err?.message?.toLowerCase().includes('model_not_found')
+        err?.message?.toLowerCase().includes('model_not_found') ||
+        err?.message?.toLowerCase().includes('not supported') ||
+        err?.message?.toLowerCase().includes('unsupported') ||
+        err?.message?.toLowerCase().includes('http 400') ||
+        err?.message?.toLowerCase().includes('http 404') ||
+        err?.message?.toLowerCase().includes('http 422') ||
+        err?.message?.toLowerCase().includes('http 50')
 
       if (isRetryable && i < candidates.length - 1) {
-        console.warn(`[Groq AI] Model "${modelToTry}" error. Retrying with "${candidates[i + 1]}"...`)
+        console.warn(`[Groq AI] Model "${modelToTry}" error (${err.message}). Retrying with "${candidates[i + 1]}"...`)
         continue
       }
       throw err

@@ -639,16 +639,20 @@ export default function SettingsScreen({ onBack }) {
                                     <p className="text-[11px] text-slate-400">Primary model (auto-falls back if unavailable)</p>
                                 </div>
                                 <select
-                                    value={settings?.groqModel || 'openai/gpt-oss-120b'}
+                                    value={settings?.groqModel || 'llama-3.3-70b-versatile'}
                                     onChange={(e) => {
                                         updateSettings({ groqModel: e.target.value });
                                         toast.success('AI Model updated!');
                                     }}
                                     className="bg-slate-700 text-white px-3 py-1.5 rounded-xl text-xs border border-slate-600 focus:outline-none max-w-[220px]"
                                 >
-                                    <option value="openai/gpt-oss-120b">OpenAI GPT-OSS 120B (Flagship)</option>
-                                    <option value="openai/gpt-oss-20b">OpenAI GPT-OSS 20B (Fast)</option>
+                                    <option value="llama-3.3-70b-versatile">Meta Llama 3.3 70B (Recommended)</option>
+                                    <option value="llama3-70b-8192">Meta Llama 3 70B (Stable)</option>
+                                    <option value="llama3-8b-8192">Meta Llama 3 8B (Ultra Fast)</option>
+                                    <option value="openai/gpt-oss-120b">OpenAI GPT-OSS 120B</option>
+                                    <option value="openai/gpt-oss-20b">OpenAI GPT-OSS 20B</option>
                                     <option value="qwen/qwen3.8-27b">Qwen 3.8 27B</option>
+                                    <option value="llama-3.1-8b-instant">Meta Llama 3.1 8B Instant</option>
                                 </select>
                             </div>
                         </div>

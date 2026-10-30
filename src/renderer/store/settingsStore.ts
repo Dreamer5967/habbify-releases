@@ -82,7 +82,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
       highContrast: false,
       reducedMotion: false,
       currencySymbol: '$',
-      groqModel: 'openai/gpt-oss-120b',
+      groqModel: 'llama-3.3-70b-versatile',
       freeAiCallsRemaining: 70,
     } as Settings
 
@@ -170,7 +170,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         highContrast: false,
         reducedMotion: false,
         currencySymbol: '$',
-        groqModel: 'openai/gpt-oss-120b',
+        groqModel: 'llama-3.3-70b-versatile',
         freeAiCallsRemaining: 70,
         createdAt: getTrueDate().toISOString(),
         updatedAt: getTrueDate().toISOString()
